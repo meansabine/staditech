@@ -257,8 +257,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Function to get hero icon path
     function getHeroIconPath(heroName) {
-        if (heroName.includes("Soldier")) return `images/heroes/Soldier 76/Soldier 76.png`;
-        return `images/heroes/${heroName}/${heroName}.png`;
+        if (heroName.includes("Soldier")) return `images/heroes/Soldier76/soldier76.png`;
+        return `images/heroes/${heroName}/${heroName.toLowerCase()}.png`;
     }
 
     // Function to get ability icon path
