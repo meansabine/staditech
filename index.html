@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staditech Builder - Overwatch 2 Stadium Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">STADITECH <span>BUILDER</span></div>
+        <div class="subtitle">Overwatch 2 Stadium Mode Build Creator</div>
+    </header>
+    
+    <div class="container">
+        <h1>Select a Hero</h1>
+        <div class="hero-selector" id="hero-selector">
+            <!-- Heroes will be dynamically added here -->
+        </div>
+        
+        <div id="hero-info">
+            <!-- Hero details will be dynamically added here -->
+        </div>
+        
+        <div id="hero-build-container" style="display: none;">
+            <!-- Selection summary -->
+            <div class="selection-summary">
+                <h3>Selected Powers (<span id="powers-counter">0</span>/4)</h3>
+                <div id="selected-powers-list" class="summary-list">
+                    <div class="empty-selection">No powers selected yet</div>
+                </div>
+                
+                <h3>Selected Items (<span id="items-counter">0</span>/6)</h3>
+                <div id="selected-items-list" class="summary-list">
+                    <div class="empty-selection">No items selected yet</div>
+                </div>
+                
+                <h3>Total Cost: <span id="total-cost" class="item-cost">0</span> Stadium Cash</h3>
+                
+                <div class="build-actions">
+                    <button id="save-current-build" class="action-btn">
+                        <i class="fas fa-save"></i> Save Build
+                    </button>
+                    <button id="import-build-btn" class="action-btn">
+                        <i class="fas fa-file-import"></i> Import Build
+                    </button>
+                    <button id="show-saved-builds-btn" class="action-btn">
+                        <i class="fas fa-folder-open"></i> Saved Builds
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-navigation" id="tab-navigation">
+                <button class="tab-button active" data-tab="overview">
+                    <i class="fas fa-user"></i> Hero Overview
+                </button>
+                <button class="tab-button" data-tab="powers">
+                    <i class="fas fa-bolt"></i> Powers
+                </button>
+                <button class="tab-button" data-tab="hero-items">
+                    <i class="fas fa-toolbox"></i> Hero Items
+                </button>
+                <button class="tab-button" data-tab="universal-items">
+                    <i class="fas fa-globe"></i> Universal Items
+                </button>
+            </div>
+            
+            <!-- Pages -->
+            <div id="pages-container">
+                <!-- Hero Overview Page (Combined with Abilities) -->
+                <div id="overview-page" class="page active">
+                    <!-- Content will be dynamically added here -->
+                </div>
+                
+                <div id="powers-page" class="page">
+                    <!-- Powers content will be dynamically added here -->
+                </div>
+                
+                <div id="hero-items-page" class="page">
+                    <!-- Hero-specific items content will be dynamically added here -->
+                </div>
+                
+                <div id="universal-items-page" class="page">
+                    <!-- Universal items content will be dynamically added here -->
+                </div>
+            </div>
+            
+            <div class="share-build" id="share-build-container">
+                <button class="share-btn" id="share-btn">
+                    <i class="fas fa-share-alt"></i> Share Build
+                </button>
+                <div id="build-code" class="build-code">
+                    <!-- Build code will be dynamically added here -->
+                </div>
+                <!-- Hidden textarea for copy functionality -->
+                <textarea id="build-code-text" class="build-code-text"></textarea>
+            </div>
+            
+            <!-- Saved Builds Panel -->
+            <div id="saved-builds-panel" class="saved-builds-panel">
+                <div class="saved-builds-title">
+                    <h3>Your Saved Builds</h3>
+                    <button id="close-saved-builds">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                </div>
+                <div id="saved-builds-list" class="saved-builds-list">
+                    <!-- Saved builds will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Import Build Modal -->
+    <div id="import-modal" class="import-modal">
+        <div class="import-modal-content">
+            <button id="close-import-modal" class="import-modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="import-modal-title">Import Build</h3>
+            <p>Paste your build code below:</p>
+            <textarea id="import-textarea" class="import-textarea" placeholder="Paste your build code here..."></textarea>
+            <button id="import-build" class="import-build-btn">
+                <i class="fas fa-file-import"></i> Import
+            </button>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Message here</span>
+    </div>
+
+    <footer>
+        <p>Staditech Builder is not affiliated with Blizzard Entertainment. All Overwatch content belongs to Blizzard.</p>
+    </footer>
+
+    <script src="data/heroes.js"></script>
+    <script src="data/universalItems.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
