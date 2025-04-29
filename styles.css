@@ -2063,3 +2063,113 @@ h1, h2, h3, h4, .tab-button, .section-title {
         padding: 1.5rem;
     }
 }
+/* Fix saved builds dropdown positioning */
+.dropdown-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 100;
+    width: 80%;
+    max-width: 600px;
+    max-height: 500px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    margin-top: 10px;
+    /* These properties ensure it doesn't get cut off by the tab bar */
+    transform-origin: top right;
+    transform: translateY(0);
+}
+
+/* This container needs relative positioning to properly position the dropdown */
+.selection-summary {
+    position: relative;
+}
+
+/* Make build actions container properly contain the dropdown */
+.build-actions {
+    position: relative;
+    z-index: 50; /* Ensure this appears above other content */
+}
+/* Add proper backgrounds to ability stats */
+.ability-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.8rem;
+    background-color: rgba(26, 28, 32, 0.4); /* Add a subtle background */
+    border-radius: 6px;
+    padding: 0.8rem;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ability-stat {
+    background-color: rgba(42, 44, 50, 0.7); /* Darker background for each stat */
+    padding: 0.7rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Enhance ability section overall */
+.ability {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(42, 44, 50, 0.5);
+    border-radius: 8px;
+    padding: 1rem;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.ability-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ability-description {
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    padding: 0.8rem;
+    background-color: rgba(26, 28, 32, 0.5);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+/* Fix positioning with tabs and make them more consistent */
+#pages-container {
+    position: relative;
+    z-index: 20; /* Lower than dropdown z-index */
+}
+
+.tab-navigation {
+    position: relative;
+    z-index: 25; /* Higher than pages but lower than dropdowns */
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(36, 38, 43, 0.6); /* Add slight background */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+/* Make tabs stand out more */
+.tab-button {
+    background-color: rgba(42, 44, 50, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tab-button.active {
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 0 15px rgba(255, 156, 30, 0.3);
+}
