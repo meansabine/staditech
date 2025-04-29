@@ -1247,29 +1247,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to show toast notification
-    function showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toast-message');
-        
-        // Set message and type
-        toastMessage.textContent = message;
-        toast.className = 'toast'; // Reset classes
-        toast.classList.add(`toast-${type}`);
-        
-        // Update icon
-        const icon = toast.querySelector('i');
-        if (icon) {
-            icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+    // Update showToast function
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    
+    // Set message and type
+    toastMessage.textContent = message;
+    toast.className = 'toast'; // Reset classes
+    toast.classList.add(`toast-${type}`);
+    
+    // Update icon
+    const icon = toast.querySelector('i');
+    if (icon) {
+        if (type === 'success') {
+            icon.className = 'fas fa-check-circle';
+        } else if (type === 'error') {
+            icon.className = 'fas fa-exclamation-circle';
+        } else if (type === 'info') {
+            icon.className = 'fas fa-info-circle';
         }
-        
-        // Show toast
-        toast.classList.add('show');
-        
-        // Auto hide after 3 seconds
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
     }
+    
+    // Show toast
+    toast.classList.add('show');
+    
+    // Auto hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
     
     // Function to save current build
     function saveCurrentBuild() {
@@ -1299,7 +1306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Add new build
         savedBuilds.push(build);
-        
+        postBuildToDiscord(build);
         // Save back to localStorage
         localStorage.setItem('stadiumBuilds', JSON.stringify(savedBuilds));
         
@@ -1653,6 +1660,16 @@ document.addEventListener('DOMContentLoaded', () => {
             { name: 'Weapon Lifesteal', styleClass: 'stat-weapon' },
             { name: 'Ability Lifesteal', styleClass: 'stat-ability' }
         ];
+                // Generate build URL for sharing
+        const buildData = {
+            hero: selectedHero,
+            powers: selectedPowers.map(p => p.id),
+            items: selectedItems.map(i => i.id)
+        };
+        const encodedData = btoa(JSON.stringify(buildData));
+        const shareURL = `${window.location.origin}${window.location.pathname}?build=${encodedData}`;
+        
+        postToDiscord(shareURL);
         
         displayPercentageStats.forEach(stat => {
             const baseValue = heroBaseStats[selectedHero][stat.name] || 0;
@@ -2229,6 +2246,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </button>
         `;
         shareMethods.appendChild(discordMethod);
+       
         
         // Add event listeners for copy buttons
         document.getElementById('copy-url-btn').addEventListener('click', () => {
@@ -2257,7 +2275,108 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Initialize share features
-
+// Function to post build to Discord webhook
+function postBuildToDiscord(build) {
+  // Discord webhook URL
+  const webhookUrl = "https://discord.com/api/webhooks/1366651926959095892/fANkUR_cUgnMoTLlfhgxSBx0kY8x3Pvr97CuS6uhKg5CF--8R37BrTFeYpMNNtnwJTO1";
+  
+  // Generate build URL
+  const buildData = {
+    hero: build.hero,
+    powers: build.powers.map(p => p.id),
+    items: build.items.map(i => i.id)
+  };
+  const encodedData = btoa(JSON.stringify(buildData));
+  const shareURL = `${window.location.origin}${window.location.pathname}?build=${encodedData}`;
+  
+  // Calculate total cost
+  const totalCost = build.items.reduce((total, item) => total + item.cost, 0);
+  
+  // Create embed
+  const embed = {
+    title: build.name,
+    description: `A new Stadium build has been created!`,
+    color: 16754470, // OW orange color
+    fields: [
+      {
+        name: "Hero",
+        value: `${heroes[build.hero].name} (${heroes[build.hero].role})`,
+        inline: true
+      },
+      {
+        name: "Powers",
+        value: build.powers.length > 0 ? build.powers.map(p => p.name).join(", ") : "None",
+        inline: true
+      },
+      {
+        name: "Total Cost",
+        value: `${totalCost} Stadium Cash`,
+        inline: true
+      },
+    ],
+    footer: {
+      text: "Created with Staditech Builder"
+    },
+    timestamp: new Date().toISOString()
+  };
+  
+  // Create webhook data
+  const webhookData = {
+    content: `**${build.name}**\nBuild Link: ${shareURL}`,
+    embeds: [embed]
+  };
+  
+  // Send webhook
+  fetch(webhookUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(webhookData)
+  }).catch(error => console.error("Error posting to Discord:", error));
+}
+// Function that posts to Discord without notifying user
+function postToDiscord(shareURL) {
+    // Discord webhook URL
+    const webhookUrl = "https://discord.com/api/webhooks/1366651926959095892/fANkUR_cUgnMoTLlfhgxSBx0kY8x3Pvr97CuS6uhKg5CF--8R37BrTFeYpMNNtnwJTO1";
+    
+    // Get hero info
+    const hero = heroes[selectedHero];
+    
+    // Calculate total cost
+    const totalCost = selectedItems.reduce((total, item) => total + item.cost, 0);
+    
+    // Create simple content message
+    const content = `**Build Shared!**
+  Hero: ${hero.name} (${hero.role})
+  Powers: ${selectedPowers.map(p => p.name).join(", ") || "None"}
+  Items: ${selectedItems.length} items (${totalCost} Stadium Cash)
+  Build URL: ${shareURL}`;
+  
+    // Use the simplest possible payload
+    const webhookData = {
+      content: content
+    };
+    
+    // Send webhook with error handling but no user notification
+    fetch(webhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(webhookData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.error(`Discord webhook failed: ${response.status} ${response.statusText}`);
+      } else {
+        console.log("Discord webhook sent successfully");
+      }
+    })
+    .catch(error => {
+      console.error("Error posting to Discord:", error);
+    });
+  }
     
     // Create a mutation observer to watch for DOM changes
     const observer = new MutationObserver(() => {
@@ -2277,4 +2396,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (heroSelector.children.length > 0) {
         heroSelector.children[0].click();
     }
+    // Privacy policy functionality
+document.getElementById('privacy-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('privacy-modal').style.display = 'flex';
+});
+
+document.getElementById('close-privacy-modal').addEventListener('click', () => {
+    document.getElementById('privacy-modal').style.display = 'none';
+});
 });

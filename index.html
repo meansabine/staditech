@@ -16,7 +16,7 @@
             <a href="https://discord.gg/bdgwvCqPJd" target="_blank" class="discord-btn">
                 <i class="fab fa-discord"></i> Join Discord
             </a>
-            <div class="version-tag">v0.1 Beta</div>
+            <div class="version-tag">v0.2 Beta</div>
         </div>
     </header>
     
@@ -113,7 +113,7 @@
                 </button>
                 <div class="beta-notice">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <span>v0.1 Beta - Bugs are expected. Please report them in our Discord.</span>
+                    <span>v0.2 Beta - Bugs are expected. Please report them in our Discord.</span>
                 </div>
                 <div id="build-code" class="build-code">
                     <!-- Build code will be dynamically added here -->
@@ -159,7 +159,8 @@
     </div>
 
     <footer>
-        <p>Staditech Builder is not affiliated with Blizzard Entertainment. All Overwatch content belongs to Blizzard.</p>
+        <p>Staditech Builder is not affiliated with Blizzard Entertainment. All Overwatch content belongs to Blizzard. Made by sabine0 on Discord</p>
+        <a href="#" id="privacy-link">Privacy Policy</a>
     </footer>
 
     <script src="data/heroes.js"></script>
@@ -168,5 +169,45 @@
     <div class="floating-share-btn" id="floating-share-btn">
         <i class="fas fa-share-alt"></i>
     </div>
+    <!-- Privacy Policy Modal -->
+<div id="privacy-modal" class="modal">
+    <div class="modal-content">
+        <button id="close-privacy-modal" class="modal-close">
+            <i class="fas fa-times"></i>
+        </button>
+        <h3 class="modal-title">Privacy Policy</h3>
+        <div class="privacy-content">
+            <p><strong>Last Updated: April 29, 2025</strong></p>
+            <h4>1. Information We Collect</h4>
+            <p>When you save a build in Staditech Builder, we collect the following information:</p>
+            <ul>
+                <li>Selected hero</li>
+                <li>Selected powers</li>
+                <li>Selected items</li>
+                <li>Build name you provide</li>
+                <li>Date and time of save</li>
+            </ul>
+            
+            <h4>2. How We Use Your Information</h4>
+            <p>We use this information to:</p>
+            <ul>
+                <li>Save your builds locally on your device</li>
+                <li>Share your builds via a unique URL when you choose to do so</li>
+                <li>Post build information to our Discord community when you save a build</li>
+            </ul>
+            
+            <h4>3. Discord Integration</h4>
+            <p>When you save a build, details about the build and a link to access it are automatically shared to our Discord community. This helps other players discover interesting builds and strategies.</p>
+            
+            <h4>4. Data Storage</h4>
+            <p>Your builds are primarily stored in your browser's local storage and are not accessible to others unless you explicitly share them. If you clear your browser data, your saved builds will be deleted.</p>
+            
+            <h4>5. Contact Us</h4>
+            <p>If you have any questions about this Privacy Policy, please join our Discord server.</p>
+        </div>
+    </div>
+</div>
 </body>
+<!-- Update the footer in index.html -->
+
 </html>
