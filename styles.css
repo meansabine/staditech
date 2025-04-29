@@ -238,25 +238,6 @@ h1 {
     margin-bottom: 0.5rem;
 }
 
-.ability-icon {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    background-color: var(--ability-color);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    color: var(--text-color);
-    overflow: hidden; /* Add this to contain the image */
-}
-
-.ability-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
 
 .ability-name {
     font-size: 1.2rem;
@@ -2276,3 +2257,43 @@ h1, h2, h3, h4, .tab-button, .section-title {
   .discord-share-btn i {
     font-size: 1.2rem;
   }
+  /* Fix for icon container sizing issues */
+/* Comprehensive fix for ability icon display issues */
+.ability-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ability-icon {
+    width: 48px; /* Increased size */
+    height: 48px; /* Increased size */
+    flex: 0 0 48px; /* Fixed flex dimensions */
+    background-color: rgba(195, 89, 255, 0.2); /* Semi-transparent background */
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid rgba(195, 89, 255, 0.5);
+    position: relative; /* Enable positioning context */
+}
+
+.ability-icon img {
+    max-width: 90%; /* Slightly smaller than container */
+    max-height: 90%;
+    object-fit: contain; /* Changed to contain instead of cover */
+    position: absolute; /* Absolute positioning */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the image */
+}
+
+.ability-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    flex: 1; /* Take up remaining space */
+}
