@@ -1442,3 +1442,624 @@ footer {
         flex-direction: column;
     }
 }
+/* Base styles with new background and font */
+:root {
+    --primary-bg: #1a1c20;
+    --secondary-bg: #24262b;
+    --accent-color: #ff9c1e; /* OW2 orange */
+    --accent-color-dark: #d87b00;
+    --highlight-color: #ff6a00;
+    --text-color: #FFFFFF;
+    --text-secondary: #b0b0b0;
+    --border-color: #3a3c42;
+    --card-bg: #2a2c32;
+    --hover-bg: #32353d;
+    --cost-color: #ffbf40; /* Gold color for currency */
+    --selected-border: #ff6a00;
+    --highlight-number: #4adfff; /* Cyan for stats */
+    --health-color: #83ff52; /* Green for health */
+    --armor-color: #ffaa00; /* Yellow for armor */
+    --shield-color: #00a0ff; /* Blue for shields */
+    --damage-color: #ff5c5c; /* Red for damage */
+    --healing-color: #40ff9c; /* Mint green for healing */
+    --cooldown-color: #4adfff; /* Purple for cooldown */
+    --weapon-color: #ff7e33; /* Orange-red for weapon */
+    --ability-color: #c359ff; /* Cyan for ability */
+    --survival-color: #83ff52; /* Green for survival */
+}
+
+body {
+    background-color: var(--primary-bg);
+    background-image: url('images/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Barlow', sans-serif;
+}
+
+/* Glass effect for containers */
+.container, .hero-profile, .hero-abilities, .stats-panel, 
+.item-category, .selection-summary, .tab-button,
+.power-card, .item-card, .build-code, .saved-builds-panel {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba(26, 28, 32, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Updated header with flex layout for Discord button */
+header {
+    background-color: rgba(36, 38, 43, 0.9);
+    padding: 1rem;
+    border-bottom: 2px solid var(--accent-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.discord-btn {
+    background-color: #5865F2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.discord-btn:hover {
+    background-color: #4752C4;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(88, 101, 242, 0.4);
+}
+
+.version-tag {
+    background-color: rgba(255, 156, 30, 0.2);
+    color: var(--accent-color);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid var(--accent-color);
+}
+
+/* Typography updates */
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px rgba(255, 156, 30, 0.5);
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+}
+
+h1, h2, h3, h4, .tab-button, .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+/* Enhanced share button with glow effect */
+.share-build {
+    margin-top: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.share-btn.glow-effect {
+    background: linear-gradient(45deg, var(--accent-color), var(--accent-color-dark));
+    color: var(--text-color);
+    border: none;
+    border-radius: 50px;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(255, 156, 30, 0.4);
+}
+
+.share-btn.glow-effect:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px rgba(255, 156, 30, 0.6);
+}
+
+.share-btn.glow-effect:active {
+    transform: translateY(1px);
+}
+
+.beta-notice {
+    background-color: rgba(255, 156, 30, 0.1);
+    border: 1px solid rgba(255, 156, 30, 0.3);
+    padding: 0.7rem 1rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.beta-notice i {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+}
+
+.beta-notice span {
+    font-size: 0.9rem;
+}
+
+/* Enhanced card styles */
+.power-card, .item-card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.power-card:hover, .item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 156, 30, 0.2);
+}
+
+.power-card.selected, .item-card.selected {
+    border-color: var(--selected-border);
+    box-shadow: 0 0 15px rgba(255, 106, 0, 0.5);
+}
+
+/* Improved tab buttons */
+.tab-button {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    transform: translateY(-2px);
+}
+
+.tab-button.active {
+    background: linear-gradient(45deg, var(--accent-color), var(--accent-color-dark));
+    border: none;
+}
+
+/* Improved toast notification */
+.toast {
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba(26, 28, 32, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Dropdown panel styling */
+.dropdown-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 100;
+    width: 80%;
+    max-width: 600px;
+    max-height: 500px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* Position the saved builds button container relatively */
+.build-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    position: relative; /* Add this */
+}
+
+/* Animation for dropdown */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-panel.active {
+    display: block;
+    animation: fadeInDown 0.3s ease forwards;
+}
+/* Improved tab navigation with more padding */
+.tab-navigation {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem; /* Increased from 1rem */
+    overflow-x: auto;
+    padding: 0.8rem 0; /* Increased padding-top/bottom from 0.5rem */
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-button {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.8rem 1.4rem; /* Increased from 0.7rem 1.2rem */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+/* URL sharing dialog */
+.url-share-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.url-share-content {
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    animation: scaleIn 0.2s ease;
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.9); }
+    to { transform: scale(1); }
+}
+
+.url-share-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.url-share-header h3 {
+    color: var(--accent-color);
+    margin: 0;
+}
+
+.close-dialog {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.3rem;
+    line-height: 1;
+}
+
+.close-dialog:hover {
+    color: var(--accent-color);
+}
+
+.url-input-container {
+    display: flex;
+    margin-top: 1rem;
+}
+
+.url-input {
+    flex: 1;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px 0 0 4px;
+    padding: 0.8rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.copy-url-btn {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 0 4px 4px 0;
+    padding: 0 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.copy-url-btn:hover {
+    background-color: var(--accent-color-dark);
+}
+
+/* Styling for the URL share button in the build footer */
+.share-url-btn {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.share-url-btn:hover {
+    background-color: var(--hover-bg);
+    border-color: var(--accent-color);
+}
+
+.share-url-btn i {
+    color: var(--accent-color);
+}
+/* Floating share button that stays visible */
+.floating-share-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(45deg, var(--accent-color), var(--accent-color-dark));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 90;
+    transition: all 0.3s ease;
+}
+
+.floating-share-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255, 156, 30, 0.5);
+}
+
+.floating-share-btn:active {
+    transform: translateY(0);
+}
+
+/* Share popup dialog */
+.share-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.share-popup.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.share-popup-content {
+    background-color: var(--secondary-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(255, 156, 30, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.share-popup.active .share-popup-content {
+    transform: scale(1);
+}
+
+.share-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.share-popup-header h2 {
+    color: var(--accent-color);
+    margin: 0;
+    font-family: 'Rajdhani', sans-serif;
+}
+
+.close-popup {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.3rem;
+    line-height: 1;
+}
+
+.close-popup:hover {
+    color: var(--accent-color);
+}
+
+.share-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.share-method {
+    padding: 1.2rem;
+    border-radius: 8px;
+    background-color: rgba(26, 28, 32, 0.6);
+    border: 1px solid var(--border-color);
+}
+
+.share-method-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.share-method-icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.share-method-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--accent-color);
+}
+
+.url-input-container {
+    display: flex;
+    margin-top: 0.8rem;
+}
+
+.url-input {
+    flex: 1;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px 0 0 4px;
+    padding: 0.8rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.copy-url-btn {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 0 4px 4px 0;
+    padding: 0 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.copy-url-btn:hover {
+    background-color: var(--accent-color-dark);
+}
+
+.text-share-area {
+    width: 100%;
+    height: 150px;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.8rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+    resize: none;
+    margin-top: 0.8rem;
+}
+
+.copy-text-btn {
+    background-color: var(--accent-color);
+    margin-top: 0.5rem;
+    color: var(--text-color);
+    border: none;
+    border-radius: 4px;
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+}
+
+.copy-text-btn:hover {
+    background-color: var(--accent-color-dark);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .floating-share-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+        bottom: 1.5rem;
+        right: 1.5rem;
+    }
+    
+    .share-popup-content {
+        padding: 1.5rem;
+    }
+}

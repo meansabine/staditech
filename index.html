@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staditech Builder - Overwatch 2 Stadium Builder</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Staditech Builder - Overwatch 2 Stadium Builder</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap">
+        <link rel="stylesheet" href="styles.css">
+    </head>
 <body>
     <header>
         <div class="logo">STADITECH <span>BUILDER</span></div>
         <div class="subtitle">Overwatch 2 Stadium Mode Build Creator</div>
+        <div class="header-actions">
+            <a href="https://discord.gg/bdgwvCqPJd" target="_blank" class="discord-btn">
+                <i class="fab fa-discord"></i> Join Discord
+            </a>
+            <div class="version-tag">v0.1 Beta</div>
+        </div>
     </header>
     
     <div class="container">
@@ -48,6 +55,19 @@
                     <button id="show-saved-builds-btn" class="action-btn">
                         <i class="fas fa-folder-open"></i> Saved Builds
                     </button>
+                    
+                    <!-- Update the Saved Builds Panel to be positioned as a dropdown -->
+                    <div id="saved-builds-panel" class="saved-builds-panel dropdown-panel">
+                        <div class="saved-builds-title">
+                            <h3>Your Saved Builds</h3>
+                            <button id="close-saved-builds">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                        </div>
+                        <div id="saved-builds-list" class="saved-builds-list">
+                            <!-- Saved builds will be dynamically added here -->
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -88,9 +108,13 @@
             </div>
             
             <div class="share-build" id="share-build-container">
-                <button class="share-btn" id="share-btn">
+                <button class="share-btn glow-effect" id="share-btn">
                     <i class="fas fa-share-alt"></i> Share Build
                 </button>
+                <div class="beta-notice">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>v0.1 Beta - Bugs are expected. Please report them in our Discord.</span>
+                </div>
                 <div id="build-code" class="build-code">
                     <!-- Build code will be dynamically added here -->
                 </div>
@@ -141,5 +165,8 @@
     <script src="data/heroes.js"></script>
     <script src="data/universalItems.js"></script>
     <script src="js/app.js"></script>
+    <div class="floating-share-btn" id="floating-share-btn">
+        <i class="fas fa-share-alt"></i>
+    </div>
 </body>
 </html>

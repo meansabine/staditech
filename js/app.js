@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedPowers = [];
     let selectedItems = [];
     let selectedHero = null;
-    
+    loadBuildFromURL();
+    setupShareFeatures();
     // Define base stats for each hero
     const heroBaseStats = {
         reaper: {
@@ -223,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Weapon Lifesteal': 0,
             'Ability Lifesteal': 0
         }
+    
     };
     
     // Current hero stats and modifiers
@@ -305,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Draw initial letter
         ctx.fillStyle = 'white';
-        ctx.font = 'bold 20px sans-serif';
+        ctx.font = 'bold 20px "Rajdhani", sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(name.charAt(0), 20, 20);
@@ -1729,39 +1731,41 @@ document.addEventListener('DOMContentLoaded', () => {
         
         buildCodeHTML += `</div>`;
         
-        // Add footer with buttons
         buildCodeHTML += `
-            <div class="build-footer">
-                <div class="build-total-cost">
-                    Total Cost: <span class="item-cost">${totalCost}</span> Stadium Cash
-                </div>
-                <div class="build-buttons">
-                    <button class="copy-build-btn" id="copy-build-btn">
-                        <i class="fas fa-copy"></i> Copy Build
-                    </button>
-                    <button class="save-build-btn" id="save-build-btn">
-                        <i class="fas fa-save"></i> Save Build
-                    </button>
-                </div>
+        <div class="build-footer">
+            <div class="build-total-cost">
+                Total Cost: <span class="item-cost">${totalCost}</span> Stadium Cash
             </div>
-        `;
-        
-        // Update the build code display
-        const buildCodeDisplay = document.getElementById('build-code');
-        buildCodeDisplay.innerHTML = buildCodeHTML;
-        buildCodeDisplay.style.display = 'block';
-        
-        // Add event listeners to the new buttons
-        document.getElementById('copy-build-btn').addEventListener('click', copyBuildToClipboard);
-        document.getElementById('save-build-btn').addEventListener('click', saveCurrentBuild);
-        
-        // Set up image error handlers for new images
-        setupImageErrorHandlers();
-        
-        // Scroll to build code
-        buildCodeDisplay.scrollIntoView({ behavior: 'smooth' });
-    }
+            <div class="build-buttons">
+                <button class="copy-build-btn" id="copy-build-btn">
+                    <i class="fas fa-copy"></i> Copy Build Text
+                </button>
+                <button class="share-url-btn" id="share-url-btn">
+                    <i class="fas fa-link"></i> Share URL
+                </button>
+                <button class="save-build-btn" id="save-build-btn">
+                    <i class="fas fa-save"></i> Save Build
+                </button>
+            </div>
+        </div>
+    `;
     
+    // Update the build code display
+    const buildCodeDisplay = document.getElementById('build-code');
+    buildCodeDisplay.innerHTML = buildCodeHTML;
+    buildCodeDisplay.style.display = 'block';
+    
+    // Add event listeners to the new buttons
+    document.getElementById('copy-build-btn').addEventListener('click', copyBuildToClipboard);
+    document.getElementById('save-build-btn').addEventListener('click', saveCurrentBuild);
+    document.getElementById('share-url-btn').addEventListener('click', shareBuildViaURL);
+    
+    // Set up image error handlers for new images
+    setupImageErrorHandlers();
+    
+    // Scroll to build code
+    buildCodeDisplay.scrollIntoView({ behavior: 'smooth' });
+}
     // Function to copy build to clipboard
     function copyBuildToClipboard() {
         const buildCodeText = document.getElementById('build-code-text');
@@ -1861,12 +1865,28 @@ document.addEventListener('DOMContentLoaded', () => {
         // Save current build
         document.getElementById('save-current-build').addEventListener('click', saveCurrentBuild);
         
-        // Show saved builds
-        document.getElementById('show-saved-builds-btn').addEventListener('click', loadSavedBuilds);
+        // Show saved builds dropdown
+        document.getElementById('show-saved-builds-btn').addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent clicking from bubbling to document
+            const panel = document.getElementById('saved-builds-panel');
+            panel.classList.toggle('active');
+            
+            if (panel.classList.contains('active')) {
+                loadSavedBuilds();
+                
+                // Close when clicking outside the panel
+                document.addEventListener('click', function closePanel(e) {
+                    if (!panel.contains(e.target) && e.target !== document.getElementById('show-saved-builds-btn')) {
+                        panel.classList.remove('active');
+                        document.removeEventListener('click', closePanel);
+                    }
+                });
+            }
+        });
         
-        // Close saved builds panel
+        // Close saved builds panel with close button
         document.getElementById('close-saved-builds').addEventListener('click', () => {
-            document.getElementById('saved-builds-panel').style.display = 'none';
+            document.getElementById('saved-builds-panel').classList.remove('active');
         });
         
         // Import build button
@@ -1881,6 +1901,121 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Import build
         document.getElementById('import-build').addEventListener('click', importBuild);
+    }
+    // Add this to your existing shareBuild function
+    function shareBuildViaURL() {
+        // Create minimal build object
+        const buildData = {
+            hero: selectedHero,
+            powers: selectedPowers.map(p => p.id),
+            items: selectedItems.map(i => i.id)
+        };
+        
+        // Encode as base64 to make it more compact
+        const encodedData = btoa(JSON.stringify(buildData));
+        
+        // Create shareable URL
+        const shareURL = `${window.location.origin}${window.location.pathname}?build=${encodedData}`;
+        
+        // Create and open URL share dialog
+        const dialog = document.createElement('div');
+        dialog.className = 'url-share-dialog';
+        dialog.innerHTML = `
+            <div class="url-share-content">
+                <div class="url-share-header">
+                    <h3>Share Your Build</h3>
+                    <button class="close-dialog">×</button>
+                </div>
+                <p>Share this link with others to let them view your build:</p>
+                <div class="url-input-container">
+                    <input type="text" value="${shareURL}" readonly class="url-input">
+                    <button class="copy-url-btn">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(dialog);
+        
+        // Select the URL input for easy copying
+        const urlInput = dialog.querySelector('.url-input');
+        urlInput.select();
+        
+        // Add event listeners for the dialog
+        dialog.querySelector('.close-dialog').addEventListener('click', () => {
+            document.body.removeChild(dialog);
+        });
+        
+        dialog.querySelector('.copy-url-btn').addEventListener('click', () => {
+            urlInput.select();
+            document.execCommand('copy');
+            showToast('URL copied to clipboard!');
+        });
+        
+        // Close when clicking outside the dialog content
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) {
+                document.body.removeChild(dialog);
+            }
+        });
+        
+        // Prevent the dialog from closing when clicking inside the content
+        dialog.querySelector('.url-share-content').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
+    function loadBuildFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const buildParam = urlParams.get('build');
+        
+        if (buildParam) {
+            try {
+                const buildData = JSON.parse(atob(buildParam));
+                
+                // Need to make sure DOM is fully loaded before working with it
+                setTimeout(() => {
+                    // Select the hero
+                    const heroCard = document.querySelector(`.hero-card[data-hero="${buildData.hero}"]`);
+                    if (heroCard) {
+                        heroCard.click();
+                        
+                        // Need to wait for hero data to load
+                        setTimeout(() => {
+                            // Select powers
+                            if (buildData.powers && Array.isArray(buildData.powers)) {
+                                buildData.powers.forEach(powerId => {
+                                    const powerCard = document.querySelector(`.power-card[data-power="${powerId}"]`);
+                                    if (powerCard && !powerCard.classList.contains('selected')) {
+                                        powerCard.click();
+                                    }
+                                });
+                            }
+                            
+                            // Select items
+                            if (buildData.items && Array.isArray(buildData.items)) {
+                                buildData.items.forEach(itemId => {
+                                    const itemCard = document.querySelector(`.item-card[data-item="${itemId}"]`);
+                                    if (itemCard && !itemCard.classList.contains('selected')) {
+                                        itemCard.click();
+                                    }
+                                });
+                            }
+                            
+                            showToast('Build loaded from URL successfully!');
+                            
+                            // Switch to overview tab
+                            document.querySelector('.tab-button[data-tab="overview"]').click();
+                        }, 300); // Wait a bit for hero data to load
+                    } else {
+                        showToast('Failed to load hero from URL', 'error');
+                    }
+                }, 100); // Wait for DOM to be ready
+            } catch (error) {
+                console.error('Failed to load build from URL:', error);
+                showToast('Failed to load build from URL', 'error');
+            }
+        }
     }
     
     // Generate hero cards
@@ -1920,6 +2055,209 @@ document.addEventListener('DOMContentLoaded', () => {
             heroSelector.appendChild(heroCard);
         }
     }
+    function setupShareFeatures() {
+        // Create the share popup
+        const sharePopup = document.createElement('div');
+        sharePopup.className = 'share-popup';
+        sharePopup.id = 'share-popup';
+        
+        sharePopup.innerHTML = `
+            <div class="share-popup-content">
+                <div class="share-popup-header">
+                    <h2>Share Your Build</h2>
+                    <button class="close-popup" id="close-share-popup">×</button>
+                </div>
+                <div class="share-methods" id="share-methods">
+                    <!-- Share methods will be added dynamically -->
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(sharePopup);
+        
+        // Setup floating share button
+        const floatingShareBtn = document.getElementById('floating-share-btn');
+        if (floatingShareBtn) {
+            floatingShareBtn.addEventListener('click', openSharePopup);
+        }
+        
+        // Setup close button
+        document.getElementById('close-share-popup').addEventListener('click', () => {
+            sharePopup.classList.remove('active');
+        });
+        
+        // Close when clicking outside the content
+        sharePopup.addEventListener('click', (e) => {
+            if (e.target === sharePopup) {
+                sharePopup.classList.remove('active');
+            }
+        });
+    }
+    
+    // Open share popup and populate with share methods
+    function openSharePopup() {
+        if (!selectedHero) {
+            showToast('Please select a hero first.', 'error');
+            return;
+        }
+        
+        if (selectedPowers.length === 0 && selectedItems.length === 0) {
+            showToast('Please select at least one Power or Item for your build.', 'error');
+            return;
+        }
+        
+        const hero = heroes[selectedHero];
+        const sharePopup = document.getElementById('share-popup');
+        const shareMethods = document.getElementById('share-methods');
+        
+        // Generate share data
+        const buildData = {
+            hero: selectedHero,
+            powers: selectedPowers.map(p => p.id),
+            items: selectedItems.map(i => i.id)
+        };
+        
+        // Encode as base64 to make it more compact
+        const encodedData = btoa(JSON.stringify(buildData));
+        const shareURL = `${window.location.origin}${window.location.pathname}?build=${encodedData}`;
+        
+        // Generate text summary
+        const totalCost = selectedItems.reduce((total, item) => total + item.cost, 0);
+        
+        let shareText = `STADITECH BUILDER - ${hero.name} Build\n`;
+        shareText += `Hero: ${hero.name} (${hero.role})\n`;
+        shareText += `Total Cost: ${totalCost} Stadium Cash\n\n`;
+        
+        if (selectedPowers.length > 0) {
+            shareText += `POWERS:\n`;
+            selectedPowers.forEach(power => {
+                shareText += `- ${power.name}\n`;
+            });
+            shareText += `\n`;
+        }
+        
+        if (selectedItems.length > 0) {
+            shareText += `ITEMS:\n`;
+            selectedItems.forEach(item => {
+                shareText += `- ${item.name} (${item.cost})\n`;
+            });
+            shareText += `\n`;
+        }
+        
+        shareText += `Load this build: ${shareURL}\n`;
+        shareText += `Created with Staditech Builder`;
+        
+        // Generate Discord formatting
+        let discordText = `**STADITECH BUILDER - ${hero.name} Build**\n`;
+        discordText += `Hero: ${hero.name} (${hero.role})\n`;
+        discordText += `Total Cost: ${totalCost} Stadium Cash\n\n`;
+        
+        if (selectedPowers.length > 0) {
+            discordText += `**POWERS:**\n`;
+            selectedPowers.forEach(power => {
+                discordText += `- ${power.name}\n`;
+            });
+            discordText += `\n`;
+        }
+        
+        if (selectedItems.length > 0) {
+            discordText += `**ITEMS:**\n`;
+            selectedItems.forEach(item => {
+                discordText += `- ${item.name} (${item.cost})\n`;
+            });
+            discordText += `\n`;
+        }
+        
+        discordText += `Load this build: ${shareURL}\n`;
+        discordText += `Created with Staditech Builder`;
+        
+        // Clear existing methods
+        shareMethods.innerHTML = '';
+        
+        // Add URL share method
+        const urlMethod = document.createElement('div');
+        urlMethod.className = 'share-method';
+        urlMethod.innerHTML = `
+            <div class="share-method-header">
+                <div class="share-method-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <div class="share-method-title">Share URL</div>
+            </div>
+            <p>Share this link for others to load your build directly:</p>
+            <div class="url-input-container">
+                <input type="text" value="${shareURL}" readonly class="url-input" id="share-url-input">
+                <button class="copy-url-btn" id="copy-url-btn">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+        `;
+        shareMethods.appendChild(urlMethod);
+        
+        // Add text share method
+        const textMethod = document.createElement('div');
+        textMethod.className = 'share-method';
+        textMethod.innerHTML = `
+            <div class="share-method-header">
+                <div class="share-method-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="share-method-title">Share as Text</div>
+            </div>
+            <p>Copy this text to share your build in forums or emails:</p>
+            <textarea readonly class="text-share-area" id="text-share-area">${shareText}</textarea>
+            <button class="copy-text-btn" id="copy-text-btn">
+                <i class="fas fa-copy"></i> Copy Text
+            </button>
+        `;
+        shareMethods.appendChild(textMethod);
+        
+        // Add Discord share method
+        const discordMethod = document.createElement('div');
+        discordMethod.className = 'share-method';
+        discordMethod.innerHTML = `
+            <div class="share-method-header">
+                <div class="share-method-icon" style="background-color: #5865F2;">
+                    <i class="fab fa-discord"></i>
+                </div>
+                <div class="share-method-title">Share to Discord</div>
+            </div>
+            <p>Copy this formatted text to share in Discord:</p>
+            <textarea readonly class="text-share-area" id="discord-share-area">${discordText}</textarea>
+            <button class="copy-text-btn" id="copy-discord-btn" style="background-color: #5865F2;">
+                <i class="fas fa-copy"></i> Copy for Discord
+            </button>
+        `;
+        shareMethods.appendChild(discordMethod);
+        
+        // Add event listeners for copy buttons
+        document.getElementById('copy-url-btn').addEventListener('click', () => {
+            const urlInput = document.getElementById('share-url-input');
+            urlInput.select();
+            document.execCommand('copy');
+            showToast('URL copied to clipboard!');
+        });
+        
+        document.getElementById('copy-text-btn').addEventListener('click', () => {
+            const textArea = document.getElementById('text-share-area');
+            textArea.select();
+            document.execCommand('copy');
+            showToast('Text copied to clipboard!');
+        });
+        
+        document.getElementById('copy-discord-btn').addEventListener('click', () => {
+            const discordArea = document.getElementById('discord-share-area');
+            discordArea.select();
+            document.execCommand('copy');
+            showToast('Discord text copied to clipboard!');
+        });
+        
+        // Show the popup
+        sharePopup.classList.add('active');
+    }
+    
+    // Initialize share features
+
     
     // Create a mutation observer to watch for DOM changes
     const observer = new MutationObserver(() => {
