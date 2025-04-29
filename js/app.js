@@ -329,6 +329,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    function safeBase64Decode(str) {
+        try {
+          // Decode base64 and use decodeURIComponent to handle non-Latin1 characters
+          const decoded = decodeURIComponent(atob(str));
+          return JSON.parse(decoded);
+        } catch (e) {
+          console.error("Error decoding build data:", e);
+          return null;
+        }
+      }
     
     // Tab navigation
     function setupTabNavigation() {
@@ -1919,20 +1929,29 @@ function showToast(message, type = 'success') {
         // Import build
         document.getElementById('import-build').addEventListener('click', importBuild);
     }
+    function safeBase64Encode(obj) {
+        // Convert the object to a JSON string
+        const jsonString = JSON.stringify(obj);
+        
+        // Use encodeURIComponent to handle non-Latin1 characters
+        return btoa(encodeURIComponent(jsonString));
+      }
     // Add this to your existing shareBuild function
     function shareBuildViaURL() {
         // Create minimal build object
-        const buildData = {
-            hero: selectedHero,
-            powers: selectedPowers.map(p => p.id),
-            items: selectedItems.map(i => i.id)
-        };
-        
-        // Encode as base64 to make it more compact
-        const encodedData = btoa(JSON.stringify(buildData));
-        
-        // Create shareable URL
-        const shareURL = `${window.location.origin}${window.location.pathname}?build=${encodedData}`;
+  const buildData = {
+    hero: selectedHero,
+    powers: selectedPowers.map(p => p.id),
+    items: selectedItems.map(i => i.id)
+  };
+ 
+  
+  
+  // Use the safe encoding function
+  const encodedData = safeBase64Encode(buildData);
+  
+  // Create shareable URL
+  const shareURL = `${window.location.origin}${window.location.pathname}?build=${encodedData}`;
         
         // Create and open URL share dialog
         const dialog = document.createElement('div');
@@ -1988,7 +2007,7 @@ function showToast(message, type = 'success') {
         
         if (buildParam) {
             try {
-                const buildData = JSON.parse(atob(buildParam));
+                const buildData = safeBase64Decode(buildParam);
                 
                 // Need to make sure DOM is fully loaded before working with it
                 setTimeout(() => {
