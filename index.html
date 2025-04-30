@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -16,7 +19,7 @@
             <a href="https://discord.gg/bdgwvCqPJd" target="_blank" class="discord-btn">
                 <i class="fab fa-discord"></i> Join Discord
             </a>
-            <div class="version-tag">v0.2 Beta</div>
+            <div class="version-tag">v0.3 Beta</div>
         </div>
     </header>
     
@@ -113,7 +116,7 @@
                 </button>
                 <div class="beta-notice">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <span>v0.2 Beta - Bugs are expected. Please report them in our Discord.</span>
+                    <span>v0.3 Beta - Bugs are expected. Please report them in our Discord.</span>
                 </div>
                 <div id="build-code" class="build-code">
                     <!-- Build code will be dynamically added here -->
@@ -207,6 +210,65 @@
         </div>
     </div>
 </div>
+<div id="consent-popup" class="consent-popup">
+    <div class="consent-content">
+        <div class="popup-logo">STADITECH <span>BUILDER</span></div>
+        <h3>Welcome to Staditech Builder!</h3>
+        <p>We'd like to share your builds with our community via Discord when you save them. No personal data is ever collected, stored or transferred - only your hero selection, powers, and items.</p>
+        <div class="consent-buttons">
+            <button id="accept-consent" class="consent-btn consent-accept">Allow Build Sharing</button>
+            <button id="decline-consent" class="consent-btn consent-decline">No Thanks</button>
+        </div>
+        <button id="close-consent" class="consent-close">×</button>
+    </div>
+</div>
+<!-- Add this right before the closing </body> tag -->
+<!-- Add this right before the closing </body> tag -->
+<script>
+    // Uncomment the line below to reset the consent setting (for testing)
+    // localStorage.removeItem('buildSharingConsent');
+    
+    // Consent popup handling
+    (function() {
+        // Get elements
+        var popup = document.getElementById('consent-popup');
+        var acceptBtn = document.getElementById('accept-consent');
+        var declineBtn = document.getElementById('decline-consent');
+        
+        // Check if consent value exists in localStorage
+        if(localStorage.getItem('buildSharingConsent') === null) {
+            // First visit - show the popup
+            popup.style.display = 'flex';
+            console.log('Showing consent popup - first visit');
+        } else {
+            // Not first visit - hide the popup
+            popup.style.display = 'none';
+            console.log('Consent already set to: ' + localStorage.getItem('buildSharingConsent'));
+        }
+        
+        // Direct click handlers for buttons
+        if(acceptBtn) {
+            acceptBtn.onclick = function() {
+                localStorage.setItem('buildSharingConsent', 'true');
+                popup.style.display = 'none';
+                alert('Thank you! Your builds will be shared with our community.');
+                console.log('Consent accepted');
+            };
+        }
+        
+        if(declineBtn) {
+            declineBtn.onclick = function() {
+                localStorage.setItem('buildSharingConsent', 'false');
+                popup.style.display = 'none';
+                alert('Your preference has been saved. Builds will not be shared.');
+                console.log('Consent declined');
+            };
+        }
+        
+        // Debug localStorage
+        console.log('Current consent setting: ' + localStorage.getItem('buildSharingConsent'));
+    })();
+    </script>
 </body>
 <!-- Update the footer in index.html -->
 

@@ -105,29 +105,35 @@ const heroes = {
         items: {
             weapon: [
                 {
-                    name: "Neverfrost", cost: 10000,
+                    name: "Neverfrost",
+                    cost: 3500,
                     description: "+25 Health, +5% Weapon Power, reduce effectiveness of enemy slows by 50%"
                 },
                 {
-                    name: "Pocket Mist", cost: 4000,
+                    name: "Pocket Mist",
+                    cost: 2500,
                     description: "+25 Health, while below 50% Life, gain 20% Move Speed"
                 },
                 {
-                    name: "Wretched Wings", cost: 10000,
+                    name: "Wretched Wings",
+                    cost: 3000,
                     description: "+25 Health, While in Wraith Form, gain the ability to fly and gain increased Move Speed"
                 }
             ],
             ability: [
                 {
-                    name: "Dauntless Draught", cost: 10000,
+                    name: "Dauntless Draught",
+                    cost: 4500,
                     description: "+50 Health, +15% Move Speed during Wraith Form, +33% Wraith Form Duration"
                 },
                 {
-                    name: "Spectral Slugs", cost: 4000,
+                    name: "Spectral Slugs",
+                    cost: 3200,
                     description: "+5% Attack Speed, +25% Magazine Size, using Shadow Step restores 100% of your ammo"
                 },
                 {
-                    name: "Nightcreeper", cost: 9500,
+                    name: "Nightcreeper",
+                    cost: 3000,
                     description: "+10% Move Speed, +30% Shadow Step Cast Speed, using Wraith Form reduces the cooldown of Shadow Step by 2s"
                 }
             ],
@@ -138,20 +144,23 @@ const heroes = {
                     description: "Increased Ability Lifesteal, each Death Blossom elimination increases your Health by 25 until the end of the round, up to 100 Health"
                 },
                 {
-                    name: "Crimson Cloak", cost: 11000,
+                    name: "Crimson Cloak",
+                    cost: 3500,
                     description: "+25 Health, +10% Ability Power, gain 15% of max Health as Overhealth while using Death Blossom"
                 },
                 {
-                    name: "Crowd Control", cost: 11000,
+                    name: "Crowd Control",
+                    cost: 2800,
                     description: "+15% Ability Power, Death Blossom gains 5% Ability Power for each enemy within its range"
                 },
                 {
                     name: "Wreath Of Ruin",
-                    cost: 4000,
+                    cost: 3500,
                     description: "+20% Ability Power, +25% Death Blossom Radius, +20% Move Speed during Death Blossom"
                 },
                 {
-                    name: "Onslaught", cost: 10000,
+                    name: "Onslaught",
+                    cost: 2500,
                     description: "+25% Max Ammo, every 3rd shot fires both of your Hellfire Shotguns. The extra shot does not consume ammo but deals 80% reduced damage"
                 }
             ]
@@ -334,12 +343,12 @@ const heroes = {
                 },
                 {
                     name: "Mastermind's Mitigator",
-                    cost: 10000,
+                    cost: 3500,
                     description: "Every 300 damage you mitigate with Defense Matrix reduces Micro Missiles cooldown by 1s"
                 },
                 {
                     name: "Onslaught Ordinance",
-                    cost: 4500,
+                    cost: 12000,
                     description: "+15% Ability Power, the quantity and duration of Micro Missiles is increased by 20%"
                 },
                 {
@@ -463,43 +472,52 @@ const heroes = {
         items: {
             weapon: [
                 {
-                    name: "High Capacity Tubing", cost: 4000,
+                    name: "High Capacity Tubing",
+                    cost: 3500,
                     description: "+10% Weapon Power, Moira can store an additional 50 Biotic Energy, beyond her base maximum of 100"
                 },
                 {
-                    name: "Bio-Needles", cost: 4000,
+                    name: "Bio-Needles",
+                    cost: 3000,
                     description: "+10% Attack Speed, Biotic Grasp's secondary fire restores 50% more Biotic Energy"
                 },
                 {
-                    name: "Subatomic Splitter", cost: 10000,
+                    name: "Subatomic Splitter",
+                    cost: 3200,
                     description: "+10% Weapon Power, +15% Biotic Grasp Secondary Fire Range"
                 }
             ],
             ability: [
                 {
-                    name: "Smart Orbs", cost: 4000,
+                    name: "Smart Orbs",
+                    cost: 2500,
                     description: "+5% Ability Power, Biotic Orb moves 50% slower while it is healing or dealing damage"
                 },
                 {
-                    name: "Extendrils", cost: 11000,
+                    name: "Extendrils",
+                    cost: 3000,
                     description: "+10% Ability Power, +30% Biotic Orb Tendril Range"
                 },
                 {
-                    name: "Abyss Boots", cost: 4000,
+                    name: "Abyss Boots",
+                    cost: 2800,
                     description: "+25 Health, while using Fade, you jump 30% higher"
                 }
             ],
             survival: [
                 {
-                    name: "Alternative Energy", cost: 10000,
+                    name: "Alternative Energy",
+                    cost: 4500,
                     description: "+10% Ability Power, +15% Attack Speed, when you use Fade, refill your Biotic Energy"
                 },
                 {
-                    name: "Levitation Shawl", cost: 4000,
+                    name: "Levitation Shawl",
+                    cost: 3500,
                     description: "+10% Ability Power, coalescence grants free flight while active"
                 },
                 {
-                    name: "Coalegion", cost: 10000,
+                    name: "Coalegion",
+                    cost: 4000,
                     description: "+25 Health, +15% Ability Power, allies healed by Coalescence deal 15% increased damage"
                 }
             ]
@@ -614,36 +632,42 @@ const heroes = {
         items: {
             weapon: [
                 {
-                    name: "Ironclad Cleats", cost: 3750,
+                    name: "Ironclad Cleats",
+                    cost: 3500,
                     description: "+25 Armor, +5% Weapon Power, +40% Knockback Resist"
                 },
                 {
-                    name: "Rocket Boots", cost: 4000,
+                    name: "Rocket Boots",
+                    cost: 2800,
                     description: "+25 Health, holding crouch increases the height of your next jump by up to 200%"
                 },
                 {
-                    name: "Dampener Grip", cost: 10000,
+                    name: "Dampener Grip",
+                    cost: 3000,
                     description: "+10% Ability Power, +10% Attack Speed, when you deal damage with Rocket Hammer, reduce the cooldown of your abilities by 1s"
                 }
             ],
             ability: [
                 {
-                    name: "Plan Z", cost: 11000,
+                    name: "Plan Z",
+                    cost: 3000,
                     description: "+10% Weapon Power, Gain 5% Attack Speed for every 100 missing Life, up to 25%"
                 },
                 {
-                    name: "Boost Recycler", cost: 4000,
+                    name: "Boost Recycler",
+                    cost: 3500,
                     description: "+10% Ability Power, if Charge is interrupted by stun, sleep, or hinder, refund 50% of Charge's cooldown"
                 },
                 {
                     name: "Crusader's Cure",
-                    cost: 3750,
+                    cost: 2500,
                     description: "+25 Health, using Charge cleanses all negative effects"
                 }
             ],
             survival: [
                 {
-                    name: "Gryphon Glider", cost: 10000,
+                    name: "Gryphon Glider",
+                    cost: 3500,
                     description: "+25 Health, +10% Ability Lifesteal, you can now fly during Charge"
                 },
                 {
@@ -652,20 +676,23 @@ const heroes = {
                     description: "+25 Health, +20% Barrier Field Health, +20% Barrier Field Size"
                 },
                 {
-                    name: "Infusion Generator", cost: 10000,
+                    name: "Infusion Generator",
+                    cost: 4500,
                     description: "+25 Health, Increase Barrier Field Health by 100% of your max Life"
                 },
                 {
-                    name: "Phoenix Protocol", cost: 10000,
+                    name: "Phoenix Protocol",
+                    cost: 3500,
                     description: "+50 Health, Barrier Field regenerates 50% faster and begins regenerating 50% sooner after being destroyed"
                 },
                 {
                     name: "Chimera's Maw",
-                    cost: 4000,
+                    cost: 2800,
                     description: "+10% Ability Power, +35% Fire Strike Radius"
                 },
                 {
-                    name: "Rocket Strike", cost: 10000,
+                    name: "Rocket Strike",
+                    cost: 3200,
                     description: "+20% Ability Power, +50% Fire Strike Projectile Speed"
                 }
             ]
@@ -778,41 +805,41 @@ const heroes = {
             weapon: [
                 {
                     name: "Battery Pack",
-                    cost: 4000,
+                    cost: 3000,
                     description: "+10% Ability Power, +30% Biotic Field Duration"
                 },
                 {
                     name: "Rapid Response Radius",
-                    cost: 10000,
+                    cost: 3500,
                     description: "+10% Ability Power, +30% Biotic Field Radius, Biotic Field heals allies below 50% Life for 20% more"
                 },
                 {
                     name: "Bomb Diffusal Boots",
-                    cost: 4000,
+                    cost: 2500,
                     description: "+25 Health, +5% Weapon Power, Helix Rocket self-knockback is increased by 200% and no longer damages yourself"
                 }
             ],
             ability: [
                 {
                     name: "Pulse Converter",
-                    cost: 4000,
+                    cost: 3000,
                     description: "+5% Attack Speed, +5% Cooldown Reduction, Helix Rocket damage restores 20% of your ammo"
                 },
                 {
                     name: "Compression Fatigues",
-                    cost: 4000,
+                    cost: 3200,
                     description: "+25 Health, +5% Attack Speed, +25% Sprint Move Speed"
                 },
                 {
                     name: "Iron Lung",
-                    cost: 4000,
+                    cost: 3500,
                     description: "+25 Health, while using Sprint, gain Overhealth equal to 5% of your max Life every 1s, up to 25%, for 5s"
                 }
             ],
             survival: [
                 {
                     name: "Endgame Equalizer",
-                    cost: 10000,
+                    cost: 4500,
                     description: "+25 Health, +15% Ability Power, when you spend your Ultimate Charge, reset all ability cooldowns. While Tactical Visor is active, gain 20% Cooldown Reduction"
                 }
             ]
@@ -927,55 +954,62 @@ const heroes = {
         items: {
             weapon: [
                 {
-                    name: "Kitsune Kicks", cost: 4000,
+                    name: "Kitsune Kicks",
+                    cost: 3000,
                     description: "+10% Move Speed, gain the ability to Double Jump"
                 },
                 {
-                    name: "Cyclist Gloves", cost: 5000,
+                    name: "Cyclist Gloves",
+                    cost: 3200,
                     description: "When you use an ability gain 20% Attack Speed for 3s"
                 },
                 {
                     name: "Asa's Armaments",
-                    cost: 4000,
+                    cost: 3500,
                     description: "+10% Attack Speed, Kunai bounce off surfaces 1 time"
                 }
             ],
             ability: [
                 {
                     name: "Ryōta's Reloader",
-                    cost: 5000,
+                    cost: 3000,
                     description: "+35% Reload Speed, after casting an ability, restore 100% of your ammo"
                 },
                 {
-                    name: "Teamwork Toolkit", cost: 5000,
+                    name: "Teamwork Toolkit",
+                    cost: 3500,
                     description: "+10% Weapon Power, when you heal an ally, grant them 10% increased Move Speed for 3s"
                 },
                 {
-                    name: "Farsight Focus Sash", cost: 5000,
+                    name: "Farsight Focus Sash",
+                    cost: 4000,
                     description: "+10% Weapon Power, when you deal damage, gain 200% Healing Ofuda Projectile Speed for 5s"
                 }
             ],
             survival: [
                 {
                     name: "Spirits' Guidance",
-                    cost: 10000,
+                    cost: 4500,
                     description: "+15% Weapon Power, 100% Healing Ofuda Projectile Speed"
                 },
                 {
-                    name: "Donut Delivery", cost: 10000,
+                    name: "Donut Delivery",
+                    cost: 2500,
                     description: "+20% Ability Power, Swift Step heals nearby allies by 80 Life over 2s"
                 },
                 {
                     name: "Goddess's Aura",
-                    cost: 10000,
+                    cost: 3500,
                     description: "+25 Health, after using Swift Step, you gain 100 Overhealth for 4s"
                 },
                 {
-                    name: "Talisman of Velocity", cost: 10000,
+                    name: "Talisman of Velocity",
+                    cost: 3500,
                     description: "+15% Ability Power, Protection Suzu grants 25% Attack Speed and 25% Move Speed for 4s"
                 },
                 {
-                    name: "Talisman of Life", cost: 11000,
+                    name: "Talisman of Life",
+                    cost: 2800,
                     description: "+20% Ability Power, Protection Suzu grants 100 Overhealth for 5s"
                 },
                 {
@@ -984,7 +1018,8 @@ const heroes = {
                     description: "+10% Ability Power, 35% Kitsune Rush Duration"
                 },
                 {
-                    name: "Our Bikes", cost: 10000,
+                    name: "Our Bikes",
+                    cost: 2500,
                     description: "+25 Health, +15% Ability Power, allies affected by Kitsune Rush are healed for 80 every 1s"
                 }
             ]
@@ -1096,59 +1131,72 @@ const heroes = {
         items: {
             weapon: [
                 {
-                    name: "Spiked Grip", cost: 3750,
+                    name: "Spiked Grip",
+                    cost: 3500,
                     description: "+30% Max Ammo, while climbing restore 20% of your ammo every 1s"
                 },
                 {
-                    name: "Swift-Loader", cost: 10000,
+                    name: "Swift-Loader",
+                    cost: 3000,
                     description: "+10% Attack Speed, +30% Max Ammo, damaging an enemy with Swift Strike restores 20% of your ammo"
                 },
                 {
-                    name: "Enduring Edge", cost: 10000,
+                    name: "Enduring Edge",
+                    cost: 4000,
                     description: "+10% Weapon Power, 4s Dragonblade Duration"
                 }
             ],
             ability: [
                 {
-                    name: "Ambusher Optics", cost: 10000,
+                    name: "Ambusher Optics",
+                    cost: 2500,
                     description: "+25% Quick Melee damage, Quick Melee can critically hit when hitting enemies from behind, dealing 50% increased damage"
                 },
                 {
-                    name: "Traversal Kinetics", cost: 3750,
+                    name: "Traversal Kinetics",
+                    cost: 3200,
                     description: "Swift Strike cooldown is reduced by 50% if it deals no damage"
                 },
                 {
-                    name: "Ninja Soles", cost: 4000,
+                    name: "Ninja Soles",
+                    cost: 3000,
                     description: "+5% Cooldown Reduction, +15% Move Speed during Deflect"
                 }
             ],
             survival: [
                 {
-                    name: "Clean Sweep", cost: 10000,
+                    name: "Clean Sweep",
+                    cost: 4500,
                     description: "+10% Ability Power, +15% Ability Lifesteal, +50% Swift Strike Width"
                 },
                 {
-                    name: "Deflecting Dash", cost: 10000,
+                    name: "Deflecting Dash",
+                    cost: 3500,
                     description: "+15% Ability Power, during Swift Strike, deflect incoming projectiles toward your reticle"
                 },
                 {
-                    name: "Equilibrium Gear", cost: 4000,
+                    name: "Equilibrium Gear",
+                    cost: 2500,
                     description: "+25 Health, while climbing, heal 5% of your Life every 1s"
                 },
                 {
-                    name: "Anti-Beam Coating", cost: 4000,
+                    name: "Anti-Beam Coating",
+                    cost: 3000,
                     description: "+25 Armor, +5% Attack Speed, Deflect blocks Beam attacks"
                 },
                 {
-                    name: "Sparrowhawk Feather", cost: 4000,
+                    name: "Sparrowhawk Feather",
+                    cost: 2800,
                     description: "+25 Health, Gain an additional jump"
                 },
                 {
-                    name: "Transference Delta", cost: 10000,
+                    name: "Transference Delta",
+                    cost: 4000,
                     description: "15% Ultimate Cost Reduction, convert 100 Health to Armor, when you use Dragonblade, heal your Armor fully"
                 },
                 {
-                    name: "Slicy Coolant", cost: 10000,
+                    name: "Slicy Coolant",
+                    cost: 3200,
                     description: "+50 Armor, +5% Cooldown Reduction, +1s Deflect Duration"
                 }
             ]
@@ -1259,43 +1307,52 @@ const heroes = {
         items: {
             weapon: [
                 {
-                    name: "Snowboot", cost: 10000,
+                    name: "Snowboot",
+                    cost: 3500,
                     description: "+15% Attack Speed, Frozen ground increases Mei's Movement Speed by 35%"
                 },
                 {
-                    name: "Coldspot", cost: 4000,
+                    name: "Coldspot",
+                    cost: 2500,
                     description: "+25 Health, Primary Fire and Blizzard can remove burn"
                 },
                 {
-                    name: "Focused Flurries", cost: 10000,
+                    name: "Focused Flurries",
+                    cost: 3000,
                     description: "+15% Attack Speed, Max Ammo is increased by 75% but reloading takes 50% longer"
                 }
             ],
             ability: [
                 {
-                    name: "Sturdy Snowfort", cost: 10000,
+                    name: "Sturdy Snowfort",
+                    cost: 4000,
                     description: "+15% Ability Power, Ability Power is increased by 5% per each spawned Ice Pillars"
                 },
                 {
-                    name: "Ice Sheet", cost: 10000,
+                    name: "Ice Sheet",
+                    cost: 3500,
                     description: "+50 Health, Ice Wall Duration is increased by 3 seconds and health is increased by 100%"
                 },
                 {
-                    name: "Meicicle", cost: 4000,
+                    name: "Meicicle",
+                    cost: 2800,
                     description: "+25 Health, Cryo-Freeze duration is increased by 25%"
                 }
             ],
             survival: [
                 {
-                    name: "Ecopoint Cryobed", cost: 10000,
+                    name: "Ecopoint Cryobed",
+                    cost: 4500,
                     description: "+20% Ability Power, on near Death, go into Cryo-Freeze and gain 15% Ultimate Charge. Can happen once every round"
                 },
                 {
-                    name: "Icy Veins", cost: 10000,
+                    name: "Icy Veins",
+                    cost: 3000,
                     description: "+10% Ability Power, Blizzard deals 100% increased damage"
                 },
                 {
-                    name: "Himalayan Hat", cost: 10000,
+                    name: "Himalayan Hat",
+                    cost: 2500,
                     description: "+10% Attack Speed, while within Blizzard, gain 10% Attack Speed"
                 }
             ]
@@ -1408,15 +1465,18 @@ const heroes = {
         items: {
             weapon: [
                 {
-                    name: "Hybrid Battery", cost: 4000,
+                    name: "Hybrid Battery",
+                    cost: 3500,
                     description: "+5% Weapon Power, Energy cannot be reduced below 20"
                 },
                 {
-                    name: "Bigger Beam", cost: 10000,
+                    name: "Bigger Beam",
+                    cost: 3000,
                     description: "+10% Weapon Power, Particle Cannon's primary fire range is increased by 20%"
                 },
                 {
-                    name: "Blastproof Boots", cost: 3750,
+                    name: "Blastproof Boots",
+                    cost: 2500,
                     description: "+25 Health, +5% Movement Speed, Particle Cannon's secondary fire self-knockback is increased by 100% and no longer damages yourself"
                 }
             ],
@@ -1427,26 +1487,30 @@ const heroes = {
                     description: "+15% Weapon Power, Consecutive Particle Cannon Secondary Fire shots consume 20% less Ammo, up to 60%, for your current magazine"
                 },
                 {
-                    name: "Jumper Cables", cost: 4000,
+                    name: "Jumper Cables",
+                    cost: 3200,
                     description: "+25 Shield, +5% Ability Power, after using a Barrier, instantly start regenerating Shields"
                 },
                 {
-                    name: "Protein Shake", cost: 4000,
+                    name: "Protein Shake",
+                    cost: 3500,
                     description: "+25 Health, +15% Quick Melee Damage, while Particle Barrier is active, become Unstoppable and Quick Melee knocks back enemies"
                 }
             ],
             survival: [
                 {
-                    name: "Beyond Barrier", cost: 4000,
+                    name: "Beyond Barrier",
+                    cost: 2800,
                     description: "+10% Ability Power, +20% Projected Barrier Range"
                 },
                 {
                     name: "Lynx's Datadrive",
-                    cost: 10000,
+                    cost: 3000,
                     description: "+25 Health, +10% Ability Power, Using Projected Barrier on an ally refunds 25% of cooldown"
                 },
                 {
-                    name: "Superconductor", cost: 10000,
+                    name: "Superconductor",
+                    cost: 4500,
                     description: "+25 Health, +15% Ability Power, +40% Barrier Duration"
                 }
             ]
@@ -1755,21 +1819,25 @@ orisa: {
                 description: "+25 Health, after using an ability, restore your Armor equal to 5% of your Max Life"
             },
             {
-                name: "Enhanced Target Sensors", cost: 4000,
+                name: "Enhanced Target Sensors",
+                cost: 3000,
                 description: "Deal 25% more damage to enemies farther than 12m away"
             },
             {
-                name: "Optimized Energy", cost: 5000,
+                name: "Optimized Energy",
+                cost: 3200,
                 description: "+10% Weapon Power, Critical Hits reduce your Heat by 5%"
             }
         ],
         ability: [
             {
-                name: "Electro Lights", cost: 4000,
+                name: "Electro Lights",
+                cost: 2500,
                 description: "+10% Attack Speed, recover from being Overheated 25% faster"
             },
             {
-                name: "Elite Rotator Cuff", cost: 4000,
+                name: "Elite Rotator Cuff",
+                cost: 3500,
                 description: "+10% Ability Power, 35% Javelin Spin Duration"
             },
             {
@@ -1785,19 +1853,23 @@ orisa: {
                 description: "+15% Ability Power, while using Javelin Spin, gain free flight and 20% Move Speed"
             },
             {
-                name: "Siphonic Spear", cost: 4000,
+                name: "Siphonic Spear",
+                cost: 3000,
                 description: "When you deal damage with Energy Javelin, heal a portion of your max Life over 3s"
             },
             {
-                name: "Arcfinder", cost: 4000,
+                name: "Arcfinder",
+                cost: 2800,
                 description: "Energy Javelin deals 25% increased damage to enemies farther than 12m away"
             },
             {
-                name: "3D-Printed Lance", cost: 11000,
+                name: "3D-Printed Lance",
+                cost: 4000,
                 description: "+15% Ability Power, Energy Javelin cooldown is reduced by 15, but each use generates 25 Heat"
             },
             {
-                name: "Charged Chassis", cost: 4000,
+                name: "Charged Chassis",
+                cost: 2500,
                 description: "+25 Health, Fortify grants additional Overhealth equal to 10% of your Max Life"
             },
             {
@@ -1807,7 +1879,7 @@ orisa: {
             },
             {
                 name: "Efi's Theorem",
-                cost: 10000,
+                cost: 3200,
                 description: "+20% Ability Lifesteal, +50% Fortify Duration"
             }
         ]
@@ -1912,40 +1984,47 @@ cassidy: {
     items: {
         weapon: [
             {
-                name: "Eagle Eye", cost: 12000,
+                name: "Eagle Eye",
+                cost: 3500,
                 description: "+50 Health, Receives 25% less damage from enemy farther than 12m"
             },
             {
-                name: "Competitive Analysis", cost: 11000,
+                name: "Competitive Analysis",
+                cost: 3000,
                 description: "+20% Weapon Lifesteal, deal 15% increased primary fire damage to enemies in the Damage role"
             },
             {
-                name: "Quickload Chamber", cost: 4000,
+                name: "Quickload Chamber",
+                cost: 3200,
                 description: "+20% Reload Speed, reloading within 6m of an enemy adds 20% of Max Ammo as extra Ammo"
             }
         ],
         ability: [
             {
                 name: "Frankie's Fixer",
-                cost: 10000,
+                cost: 4000,
                 description: "+50 Health, Heal 10 Life for each Ammo loaded using Combat Roll"
             },
             {
-                name: "Streamlined Poncho", cost: 5000,
+                name: "Streamlined Poncho",
+                cost: 2500,
                 description: "+10% Cooldown Reduction, Combat Roll reduces Flashbang cooldown"
             },
             {
-                name: "Improvised Dynamite", cost: 11000,
+                name: "Improvised Dynamite",
+                cost: 3500,
                 description: "+20% Ability Power, +10% Cooldown Reduction, Flashbang explosion radius is increased by 50%"
             }
         ],
         survival: [
             {
-                name: "Wanted Poster", cost: 4000,
+                name: "Wanted Poster",
+                cost: 3000,
                 description: "+25 Health, Deadeye eliminations reward extra 500 Stadium Cash each"
             },
             {
-                name: "Blackwatch Tech", cost: 4000,
+                name: "Blackwatch Tech",
+                cost: 2800,
                 description: "+10% Ability Power, Deadeye eliminations reduce Flashbang max cooldown by 10%, up to 40% for the round"
             }
         ]
@@ -2052,59 +2131,72 @@ ashe: {
     items: {
         weapon: [
             {
-                name: "Tripod", cost: 4000,
+                name: "Tripod",
+                cost: 3500,
                 description: "+5% Weapon Power, The Viper, Coach Gun, and Dynamite deal 10% more damage to enemies that are below you"
             },
             {
-                name: "Silver Lighter", cost: 4000,
+                name: "Silver Lighter",
+                cost: 3000,
                 description: "+10% Ability Power, Damage dealt to Burning targets grants 20% more Ultimate Charge"
             },
             {
-                name: "Greased Loader", cost: 5000,
+                name: "Greased Loader",
+                cost: 2500,
                 description: "25% Max Ammo, +15% Reload Speed"
             }
         ],
         ability: [
             {
-                name: "Maxed Mag", cost: 4000,
+                name: "Maxed Mag",
+                cost: 3200,
                 description: "+5% Attack Speed, Gain 3% Attack Speed for each remaining Ammo above 50% of your Max Ammo"
             },
             {
-                name: "Ironsights", cost: 11000,
+                name: "Ironsights",
+                cost: 3500,
                 description: "+10% Attack Speed, when the target is further than 10m, scoped shot gains 1% damage for each meter"
             },
             {
-                name: "Sidewinder", cost: 11000,
+                name: "Sidewinder",
+                cost: 3000,
                 description: "+10% Attack Speed, when the target is within 10m, unscoped shot gains 15% increased damage"
             }
         ],
         survival: [
             {
-                name: "Furnace Fuel", cost: 4000,
+                name: "Furnace Fuel",
+                cost: 4500,
                 description: "+25 Health, +5% Ability Power, When Burn gets removed instead of expiring, gain 3% Ultimate Charge"
             },
             {
-                name: "Stacked Sticks", cost: 10000,
+                name: "Stacked Sticks",
+                cost: 3000,
                 description: "+15% Ability Power, 40% Dynamite Explosion Radius"
             },
             {
-                name: "Firestarter", cost: 10000,
+                name: "Firestarter",
+                cost: 4000,
                 description: "+50 Health, Your Burning effects gain 35% Lifesteal"
             },
             {
-                name: "Silver Spurs", cost: 4000,
+                name: "Silver Spurs",
+                cost: 2500,
                 description: "+25 Health, after using Coach Gun, gain 20% Move Speed for 3s"
             },
             {
-                name: "Build-A-Blast Buckshot", cost: 10000,
+                name: "Build-A-Blast Buckshot",
+                cost: 2800,
                 description: "+10% Cooldown Reduction, Coach Gun has 50% increased self-knockback"
             },
             {
-                name: "Infrared Lenses", cost: 10000,
+                name: "Infrared Lenses",
+                cost: 3500,
                 description: "+20% Ability Power, deal 25% increased damage to Burning targets"
             },
             {
-                name: "B.O.B. Wire Defense", cost: 10000,
+                name: "B.O.B. Wire Defense",
+                cost: 3200,
                 description: "+50 Health, +25 Armor, when B.O.B. finishes charging, B.O.B. gains 300 Armor"
             }
         ]
@@ -2212,56 +2304,67 @@ ana: {
     items: {
         weapon: [
             {
-                name: "Dash Boots", cost: 4000,
+                name: "Dash Boots",
+                cost: 2500,
                 description: "+5% Movement Speed, jumping in mid-air will dash you a short distance"
             },
             {
-                name: "Potent Projectiles", cost: 5000,
+                name: "Potent Projectiles",
+                cost: 3000,
                 description: "+10% Weapon Power, Unscoped Biotic Rifle projectiles are 100% larger"
             },
             {
-                name: "Quick Scope", cost: 5000,
+                name: "Quick Scope",
+                cost: 3500,
                 description: "+5% Weapon Power, +200% Faster Scope Speed, Deal 20% more damage to airborne enemies"
             }
         ],
         ability: [
             {
-                name: "Unscoped Resources", cost: 11000,
+                name: "Unscoped Resources",
+                cost: 3200,
                 description: "+4 Max Ammo, Unscoped shots have a 50% chance not to consume Ammo"
             },
             {
-                name: "Double Dose",
+                name: "Double Dosage",
                 cost: 4000,
                 description: "+25 Health, landing a Sleep Dart on target affected by Biotic Grenade reduces its cooldown by 25%"
             },
             {
-                name: "Tranquilizer", cost: 10000,
+                name: "Tranquilizer",
+                cost: 3500,
                 description: "Sleep Dart gains: 500% Collision Size, 100% Projectile Speed, 20% Sleep Duration"
             }
         ],
         survival: [
             {
-                name: "Lethal Dose", cost: 9000,
+                name: "Lethal Dose",
+                cost: 4500,
                 description: "+50% Ability Lifesteal, Sleep Dart damage is increased by 100"
             },
             {
-                name: "I.V. Drip", cost: 4000,
+                name: "I.V. Drip",
+                cost: 2800,
                 description: "+25 Health, while affected by Biotic Grenade, Ana gains 100 Overhealth"
             },
             {
-                name: "Grenadius Pin", cost: 12000,
+                name: "Grenadius Pin",
+                cost: 3000,
                 description: "+30% Biotic Grenade Radius, +20% Ability Power"
             },
             {
-                name: "Target Tracker", cost: 4000,
+                name: "Target Tracker",
+                cost: 3200,
                 description: "+15% Biotic Grenade Duration, for each enemy or ally affected by Biotic Grenade, gain 5% Attack Speed, up to 25%"
             },
             {
-                name: "Cluster Core", cost: 10000,
+                name: "Cluster Core",
+                cost: 3500,
                 description: "+25% Ability Lifesteal, Biotic Grenade cooldown is reduced by 1s for each target it hits"
             },
             {
-                name: "Eye of Horus", cost: 9000,
+                name: "Eye of Horus",
+                cost: 4000,
                 description: "+50 Shields, Nano Boost can target allies through walls and its range is increased to 60m"
             },
             {
@@ -2387,39 +2490,47 @@ mercy: {
     items: {
         weapon: [
             {
-                name: "Mid-Air Mobilizer", cost: 4000,
+                name: "Mid-Air Mobilizer",
+                cost: 3500,
                 description: "+5% Weapon Power, 10% Attack Speed while flying"
             },
             {
-                name: "Aerodynamic Feathers", cost: 4000,
+                name: "Aerodynamic Feathers",
+                cost: 3000,
                 description: "+25 Health, while affected by Angelic Descent, continuously gain 10% Move Speed every 1s"
             },
             {
-                name: "Angeleisure Wear", cost: 4000,
+                name: "Angeleisure Wear",
+                cost: 2500,
                 description: "+25 Health, while affected by Angelic Descent or Guardian Angel, heal 3% of your Life every 1s"
             }
         ],
         ability: [
             {
-                name: "Long Distance Wings", cost: 4000,
+                name: "Long Distance Wings",
+                cost: 3200,
                 description: "+10% Ability Power, +33% Guardian Angel Range"
             },
             {
-                name: "Angelic Acrobatics", cost: 10000,
+                name: "Angelic Acrobatics",
+                cost: 3500,
                 description: "+15% Guardian Angel Move Speed, Guardian Angel's cooldown starts as soon as you jump or crouch"
             },
             {
-                name: "Blessed Boosters", cost: 9000,
+                name: "Blessed Boosters",
+                cost: 4000,
                 description: "+50 Health, launch velocity is increased by 25% when canceling Guardian Angel with crouch or jump"
             }
         ],
         survival: [
             {
-                name: "Chain Evoker", cost: 10000,
+                name: "Chain Evoker",
+                cost: 4500,
                 description: "+50 Armor, +5% Caduceus Staff damage boost, +15% Ultimate Charge gained from damage boosted"
             },
             {
-                name: "Celestial Clip", cost: 10000,
+                name: "Celestial Clip",
+                cost: 3000,
                 description: "+10% Weapon Power, +33% Max Ammo, Caduceus Blaster has a 10% chance to fire an extra shot that doesn't consume additional ammo"
             },
             {
@@ -2428,7 +2539,8 @@ mercy: {
                 description: "+25 Health, +10% Weapon Power, +33% Caduceus Staff Range"
             },
             {
-                name: "Resurrection Rangefinder", cost: 10000,
+                name: "Resurrection Rangefinder",
+                cost: 2800,
                 description: "+10% Cooldown Reduction, +75% Resurrection Range"
             }
         ]
@@ -2555,21 +2667,25 @@ lucio: {
                 description: "+10% Ability Power, when allies leave your Crossfade area, the effect lingers for 2s"
             },
             {
-                name: "Nano Boop", cost: 4000,
+                name: "Nano Boop",
+                cost: 3000,
                 description: "+5% Cooldown Reduction, Environmental Kills grant Nano Boost for 5s"
             },
             {
-                name: "Speed Skates", cost: 3750,
+                name: "Speed Skates",
+                cost: 2500,
                 description: "+25 Health, after Wallriding, gain 30% Move Speed for 2s"
             }
         ],
         ability: [
             {
-                name: "Hip Hop", cost: 9000,
+                name: "Hip Hop",
+                cost: 3200,
                 description: "+25 Health, after Wallriding, gain an additional jump while airborne"
             },
             {
-                name: "All-Out Auditiva", cost: 11000,
+                name: "All-Out Auditiva",
+                cost: 4000,
                 description: "+20% Ability Power, +33% Amp It Up Duration"
             },
             {
@@ -2580,15 +2696,18 @@ lucio: {
         ],
         survival: [
             {
-                name: "B-Side Bop", cost: 10000,
+                name: "B-Side Bop",
+                cost: 4500,
                 description: "+25 Health, +25% Melee Damage, after using Soundwave, your next Quick Melee grants decaying Overhealth equal to 100% of damage dealt"
             },
             {
-                name: "Riff Repeater", cost: 10000,
+                name: "Riff Repeater",
+                cost: 3000,
                 description: "+15% Attack Speed, Sonic Amplifier projectiles ricochet off walls 3 times"
             },
             {
-                name: "Airwaves", cost: 10000,
+                name: "Airwaves",
+                cost: 2800,
                 description: "+25 Health, +15% Ability Power, Sound Barrier effectiveness is increased by 5% for every 1s Sound Barrier is channeled, up to 50%"
             }
         ]
@@ -2703,15 +2822,18 @@ juno: {
     items: {
         weapon: [
             {
-                name: "Vantage Shot", cost: 4000,
+                name: "Vantage Shot",
+                cost: 3500,
                 description: "+5% Weapon Power, while airborne, Mediblaster deals 15% more damage"
             },
             {
-                name: "Long Range Blaster", cost: 12000,
+                name: "Long Range Blaster",
+                cost: 3000,
                 description: "+15% Weapon Power, Mediblaster deals 15% increased damage and healing to targets farther than 12m away"
             },
             {
-                name: "Lock-On Shield", cost: 4000,
+                name: "Lock-On Shield",
+                cost: 2500,
                 description: "+10% Ability Power, while aiming Pulsar Torpedoes, gain Overhealth equal to 50% of your max Shields"
             }
         ],
@@ -2722,11 +2844,13 @@ juno: {
                 description: "+15% Ability Power, Pulsar Torpedoes explode on hit, deal 20 damage to nearby enemies"
             },
             {
-                name: "Pulse Spike", cost: 10000,
+                name: "Pulse Spike",
+                cost: 4000,
                 description: "+10% Attack Speed, +35% Pulsar Torpedoes Projectile Speed, after using Pulsar Torpedoes, gain 25% Attack Speed for 4s"
             },
             {
-                name: "Boosted Rockets", cost: 4000,
+                name: "Boosted Rockets",
+                cost: 3500,
                 description: "+25 Shield, +25% Glide Boost Duration"
             }
         ],
@@ -2737,19 +2861,23 @@ juno: {
                 description: "+75 Shield, during Glide Boost, gain 10% Damage Reduction"
             },
             {
-                name: "Gravitational Push", cost: 10000,
+                name: "Gravitational Push",
+                cost: 3000,
                 description: "+15% Weapon Power, during Glide Boost, gain 20% Attack Speed and your Quick Melee knocks enemies back"
             },
             {
-                name: "Lux Loop", cost: 4000,
+                name: "Lux Loop",
+                cost: 2800,
                 description: "+10% Ability Power, +25% Hyper Ring Duration"
             },
             {
-                name: "Solar Shielding", cost: 10000,
+                name: "Solar Shielding",
+                cost: 3500,
                 description: "+25% Ability Power, allies affected by Hyper Ring restore Shields every 1s"
             },
             {
-                name: "Sunburst Serum", cost: 10000,
+                name: "Sunburst Serum",
+                cost: 3200,
                 description: "+75 Shield, Orbital Ray gains 25% increased healing"
             },
             {

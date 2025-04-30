@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedHero = null;
     loadBuildFromURL();
     setupShareFeatures();
+
+    // Call this after displaying a hero
+    document.addEventListener('heroSelected', function() {
+        setupItemFilters();
+    });
     // Define base stats for each hero
     const heroBaseStats = {
         reaper: {
@@ -2296,6 +2301,13 @@ function showToast(message, type = 'success') {
     // Initialize share features
 // Function to post build to Discord webhook
 function postBuildToDiscord(build) {
+    const hasConsented = localStorage.getItem('buildSharingConsent');
+    
+    // Only share if explicitly consented
+    if (hasConsented !== 'true') {
+        console.log('User has not consented to Discord sharing');
+        return;
+    }
   // Discord webhook URL
   const webhookUrl = "https://discord.com/api/webhooks/1366651926959095892/fANkUR_cUgnMoTLlfhgxSBx0kY8x3Pvr97CuS6uhKg5CF--8R37BrTFeYpMNNtnwJTO1";
   
@@ -2357,6 +2369,13 @@ function postBuildToDiscord(build) {
 // Function that posts to Discord without notifying user
 function postToDiscord(shareURL) {
     // Discord webhook URL
+    const hasConsented = localStorage.getItem('buildSharingConsent');
+    
+    // Only share if explicitly consented
+    if (hasConsented !== 'true') {
+        console.log('User has not consented to Discord sharing');
+        return;
+    }
     const webhookUrl = "https://discord.com/api/webhooks/1366651926959095892/fANkUR_cUgnMoTLlfhgxSBx0kY8x3Pvr97CuS6uhKg5CF--8R37BrTFeYpMNNtnwJTO1";
     
     // Get hero info
@@ -2424,4 +2443,7 @@ document.getElementById('privacy-link').addEventListener('click', (e) => {
 document.getElementById('close-privacy-modal').addEventListener('click', () => {
     document.getElementById('privacy-modal').style.display = 'none';
 });
+
+
+
 });
