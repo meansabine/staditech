@@ -16,8 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedPowers = [];
     let selectedItems = [];
     let selectedHero = null;
-    loadBuildFromURL();
-    setupShareFeatures();
+    
 
     // Call this after displaying a hero
     // Define base stats for each hero
@@ -226,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Weapon Lifesteal': 0,
             'Ability Lifesteal': 0
         }
+        
     
     };
     
@@ -250,6 +250,8 @@ const statPatterns = [
     { regex: /\+(\d+)%\s*Melee Damage/g, stat: 'Melee Damage', isPercentage: true, baseValue: 0 },
     { regex: /\+(\d+)%\s*Critical Damage/g, stat: 'Critical Damage', isPercentage: true, baseValue: 0 }
 ];
+loadBuildFromURL();
+    setupShareFeatures();
     
     // Helper function to map item names to icon filenames (PNG format)
     function getIconFileName(itemName) {
@@ -464,16 +466,23 @@ const statPatterns = [
             }
         });
     }
-    function safeBase64Decode(str) {
-        try {
-          // Decode base64 and use decodeURIComponent to handle non-Latin1 characters
-          const decoded = decodeURIComponent(atob(str));
-          return JSON.parse(decoded);
-        } catch (e) {
-          console.error("Error decoding build data:", e);
-          return null;
-        }
+   // Replace the safeBase64Decode function in app.js
+function safeBase64Decode(str) {
+    try {
+      // First try standard base64 decoding
+      const decoded = atob(str);
+      // Then parse the JSON
+      try {
+        return JSON.parse(decoded);
+      } catch (jsonError) {
+        // If regular parsing fails, try with decodeURIComponent for special characters
+        return JSON.parse(decodeURIComponent(decoded));
       }
+    } catch (e) {
+      console.error("Error decoding build data:", e);
+      return null;
+    }
+  }
     
     // Tab navigation
     function setupTabNavigation() {
@@ -2457,6 +2466,7 @@ function updatePersistentAbilityStats() {
     // Fix the order of operations to ensure elements exist before updating
 function updatePersistentBuildSummary() {
     if (!selectedHero) return;
+    ensurePersistentBuildSummary();
     
     const hero = heroes[selectedHero];
     
@@ -2593,11 +2603,15 @@ function updateHealthBarSegments(healthValue) {
     function initAbilityCarousel() {
         if (!selectedHero) return;
         
+        // Add a small delay to ensure DOM elements exist
+    setTimeout(() => {
         const hero = heroes[selectedHero];
         const carousel = document.getElementById('ability-carousel');
         const indicator = document.getElementById('ability-indicator');
         
         if (!carousel || !indicator) return;
+        
+        
         
         // Clear existing content
         carousel.innerHTML = '';
@@ -2685,6 +2699,8 @@ function updateHealthBarSegments(healthValue) {
         setTimeout(() => {
             setupExpandableStats();
         }, 100);
+        // Rest of your carousel initialization code...
+    }, 100);
     }
     
 
@@ -3434,15 +3450,19 @@ function showToast(message, type = 'success') {
             }
         });
         
-        // Close saved builds panel with close button
-        document.getElementById('close-saved-builds').addEventListener('click', () => {
-            document.getElementById('saved-builds-panel').classList.remove('active');
-        });
-        
-        // Import build button
-        document.getElementById('import-build-btn').addEventListener('click', () => {
-            document.getElementById('import-modal').style.display = 'flex';
-        });
+
+document.getElementById('close-saved-builds').addEventListener('click', () => {
+  document.getElementById('saved-builds-panel').style.display = 'none';
+});
+
+// Also add a click handler for document to close when clicking outside
+document.addEventListener('click', (e) => {
+  const panel = document.getElementById('saved-builds-panel');
+  if (panel.style.display === 'block' && !panel.contains(e.target) && 
+      e.target !== document.getElementById('show-saved-builds-btn')) {
+    panel.style.display = 'none';
+  }
+});
         
         // Close import modal
         document.getElementById('close-import-modal').addEventListener('click', () => {
@@ -3460,122 +3480,168 @@ function showToast(message, type = 'success') {
         return btoa(encodeURIComponent(jsonString));
       }
     // Add this to your existing shareBuild function
-    function shareBuildViaURL() {
-        // Create minimal build object
-  const buildData = {
-    hero: selectedHero,
-    powers: selectedPowers.map(p => p.id),
-    items: selectedItems.map(i => i.id)
-  };
- 
-  
-  
-  // Use the safe encoding function
-  const encodedData = safeBase64Encode(buildData);
-  
-  // Create shareable URL
-  const shareURL = `${window.location.origin}${window.location.pathname}?build=${encodedData}`;
-        
-        // Create and open URL share dialog
-        const dialog = document.createElement('div');
-        dialog.className = 'url-share-dialog';
-        dialog.innerHTML = `
-            <div class="url-share-content">
-                <div class="url-share-header">
-                    <h3>Share Your Build</h3>
-                    <button class="close-dialog">×</button>
-                </div>
-                <p>Share this link with others to let them view your build:</p>
-                <div class="url-input-container">
-                    <input type="text" value="${shareURL}" readonly class="url-input">
-                    <button class="copy-url-btn">
-                        <i class="fas fa-copy"></i> Copy
-                    </button>
-                </div>
+    // Update shareBuildViaURL function
+// Replace the shareBuildViaURL function with this improved version
+function shareBuildViaURL() {
+    if (!selectedHero) {
+        showToast('Please select a hero first.', 'error');
+        return;
+    }
+    
+    // Create minimal build object
+    const buildData = {
+        hero: selectedHero,
+        powers: selectedPowers.map(p => p.id),
+        items: selectedItems.map(i => i.id)
+    };
+    
+    // Use standard btoa encoding
+    const encodedData = btoa(JSON.stringify(buildData));
+    
+    // Create shareable URL - make sure URL is valid
+    const currentUrl = new URL(window.location.href);
+    currentUrl.search = ""; // Clear existing query params
+    currentUrl.searchParams.set('build', encodedData);
+    const shareURL = currentUrl.toString();
+    
+    // Debug log the URL
+    console.log("Share URL:", shareURL);
+    console.log("URL length:", shareURL.length);
+    
+    // Create and display URL share dialog
+    const dialog = document.createElement('div');
+    dialog.className = 'url-share-dialog';
+    dialog.innerHTML = `
+        <div class="url-share-content">
+            <div class="url-share-header">
+                <h3>Share Your Build</h3>
+                <button class="close-dialog">×</button>
             </div>
-        `;
-        
-        document.body.appendChild(dialog);
-        
-        // Select the URL input for easy copying
+            <p>Share this link with others to let them view your build:</p>
+            <div class="url-input-container">
+                <input type="text" value="${shareURL}" readonly class="url-input">
+                <button class="copy-url-btn">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(dialog);
+    
+    // Add event listeners
+    dialog.querySelector('.close-dialog').addEventListener('click', () => {
+        document.body.removeChild(dialog);
+    });
+    
+    dialog.querySelector('.copy-url-btn').addEventListener('click', () => {
         const urlInput = dialog.querySelector('.url-input');
         urlInput.select();
-        
-        // Add event listeners for the dialog
-        dialog.querySelector('.close-dialog').addEventListener('click', () => {
-            document.body.removeChild(dialog);
-        });
-        
-        dialog.querySelector('.copy-url-btn').addEventListener('click', () => {
-            urlInput.select();
-            document.execCommand('copy');
-            showToast('URL copied to clipboard!');
-        });
-        
-        // Close when clicking outside the dialog content
-        dialog.addEventListener('click', (e) => {
-            if (e.target === dialog) {
-                document.body.removeChild(dialog);
-            }
-        });
-        
-        // Prevent the dialog from closing when clicking inside the content
-        dialog.querySelector('.url-share-content').addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-    }
-    function loadBuildFromURL() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const buildParam = urlParams.get('build');
-        
-        if (buildParam) {
-            try {
-                const buildData = safeBase64Decode(buildParam);
+        document.execCommand('copy');
+        showToast('URL copied to clipboard!');
+    });
+}
+    // Replace the loadBuildFromURL function in app.js with this more robust version
+function loadBuildFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const buildParam = urlParams.get('build');
+    
+    if (!buildParam) return;
+    
+    try {
+        // First, make sure the page is fully loaded
+        const checkDOMReady = setInterval(() => {
+            if (document.getElementById('hero-selector') && 
+                document.getElementById('hero-selector').children.length > 0) {
                 
-                // Need to make sure DOM is fully loaded before working with it
-                setTimeout(() => {
-                    // Select the hero
-                    const heroCard = document.querySelector(`.hero-card[data-hero="${buildData.hero}"]`);
-                    if (heroCard) {
-                        heroCard.click();
+                clearInterval(checkDOMReady);
+                
+                // Decode the build data with multiple fallback methods
+                let buildData;
+                
+                try {
+                    // Try regular base64 decoding first
+                    buildData = JSON.parse(atob(buildParam));
+                } catch (e1) {
+                    console.log("Standard decoding failed, trying with URI component:", e1);
+                    
+                    try {
+                        // Try with URI component decoding
+                        buildData = JSON.parse(decodeURIComponent(atob(buildParam)));
+                    } catch (e2) {
+                        console.log("URI decoding failed, trying to repair the string:", e2);
                         
-                        // Need to wait for hero data to load
-                        setTimeout(() => {
-                            // Select powers
-                            if (buildData.powers && Array.isArray(buildData.powers)) {
-                                buildData.powers.forEach(powerId => {
-                                    const powerCard = document.querySelector(`.power-card[data-power="${powerId}"]`);
-                                    if (powerCard && !powerCard.classList.contains('selected')) {
-                                        powerCard.click();
-                                    }
-                                });
-                            }
-                            
-                            // Select items
-                            if (buildData.items && Array.isArray(buildData.items)) {
-                                buildData.items.forEach(itemId => {
-                                    const itemCard = document.querySelector(`.item-card[data-item="${itemId}"]`);
-                                    if (itemCard && !itemCard.classList.contains('selected')) {
-                                        itemCard.click();
-                                    }
-                                });
-                            }
-                            
-                            showToast('Build loaded from URL successfully!');
-                            
-                            // Switch to overview tab
-                            document.querySelector('.tab-button[data-tab="overview"]').click();
-                        }, 300); // Wait a bit for hero data to load
-                    } else {
-                        showToast('Failed to load hero from URL', 'error');
+                        // Try to repair and decode a potentially malformed string
+                        const fixedParam = buildParam.replace(/-/g, '+').replace(/_/g, '/');
+                        try {
+                            buildData = JSON.parse(atob(fixedParam));
+                        } catch (e3) {
+                            console.error("All decoding methods failed:", e3);
+                            showToast('Invalid build code in URL', 'error');
+                            return;
+                        }
                     }
-                }, 100); // Wait for DOM to be ready
-            } catch (error) {
-                console.error('Failed to load build from URL:', error);
-                showToast('Failed to load build from URL', 'error');
+                }
+                
+                // Verify we have valid build data
+                if (!buildData || !buildData.hero) {
+                    console.error("Missing hero in build data");
+                    showToast('Invalid build data: missing hero', 'error');
+                    return;
+                }
+                
+                // Log decoded data for debugging
+                console.log("Decoded build data:", buildData);
+                
+                // Try to find the hero
+                const heroSelector = document.getElementById('hero-selector');
+                const heroCard = heroSelector.querySelector(`.hero-card[data-hero="${buildData.hero}"]`);
+                
+                if (!heroCard) {
+                    console.error(`Hero "${buildData.hero}" not found in available heroes`);
+                    showToast(`Failed to load hero: "${buildData.hero}" not found`, 'error');
+                    return;
+                }
+                
+                // Click the hero card to select it
+                heroCard.click();
+                
+                // Wait for hero data to load
+                setTimeout(() => {
+                    // Select powers
+                    if (buildData.powers && Array.isArray(buildData.powers)) {
+                        buildData.powers.forEach(powerId => {
+                            const powerCard = document.querySelector(`.power-card[data-power="${powerId}"]`);
+                            if (powerCard && !powerCard.classList.contains('selected')) {
+                                powerCard.click();
+                            }
+                        });
+                    }
+                    
+                    // Select items
+                    if (buildData.items && Array.isArray(buildData.items)) {
+                        buildData.items.forEach(itemId => {
+                            const itemCard = document.querySelector(`.item-card[data-item="${itemId}"]`);
+                            if (itemCard && !itemCard.classList.contains('selected')) {
+                                itemCard.click();
+                            }
+                        });
+                    }
+                    
+                    showToast('Build loaded from URL successfully!');
+                }, 500);
             }
-        }
+        }, 100);
+        
+        // Stop checking after 10 seconds to prevent infinite loop
+        setTimeout(() => {
+            clearInterval(checkDOMReady);
+        }, 10000);
+        
+    } catch (error) {
+        console.error('Failed to load build from URL:', error);
+        showToast('Failed to load build from URL: ' + error.message, 'error');
     }
+}
     
     // Generate hero cards
     function generateHeroCards() {
@@ -3622,7 +3688,15 @@ function showToast(message, type = 'success') {
             
             heroSelector.appendChild(heroCard);
         }
-        setupRoleFilters();
+          // Add debug logging
+    console.log("Generated hero cards:", document.querySelectorAll('.hero-card').length);
+    
+    // Dispatch an event when heroes are loaded
+    document.dispatchEvent(new CustomEvent('heroesLoaded'));
+    setupRoleFilters();
+    // Always return true when function completes successfully
+    return true;
+        
     }
     function updateAbilityStats() {
         const abilities = document.querySelectorAll('.ability');

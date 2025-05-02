@@ -2949,3 +2949,115 @@ h1 {
         height: 40px;
         margin-right: 10px;
     }
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+    
+    .spinner {
+        width: 60px;
+        height: 60px;
+        border: 5px solid rgba(255, 156, 30, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--accent-color);
+        animation: spin 1s infinite linear;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    /* Update in styles.css */
+.saved-builds-panel {
+    z-index: 1000; /* Increase z-index */
+    position: absolute;
+    top: 100%;
+    right: 0;
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: rgba(36, 38, 43, 0.95);
+    border: 1px solid var(--accent-color);
+    width: 90%;
+    max-width: 600px;
+}
+/* Update the saved builds panel styling in styles.css */
+.saved-builds-panel {
+    position: fixed; /* Change from absolute to fixed */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center in viewport */
+    z-index: 1050; /* Higher z-index to ensure it's on top */
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: rgba(36, 38, 43, 0.95);
+    border-radius: 12px;
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    display: none; /* Hidden by default */
+  }
+  
+  /* Add overlay background for better modal experience */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(3px);
+    z-index: 1040;
+    display: none;
+  }
+  
+  /* Improve the selected items display */
+  .summary-item {
+    background-color: rgba(42, 44, 50, 0.8);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+  
+  .summary-item .remove-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(255, 92, 92, 0.2);
+    color: var(--damage-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .summary-item .remove-btn:hover {
+    background-color: var(--damage-color);
+    color: white;
+  }
+  
+  /* Make costs more visible */
+  .item-cost {
+    color: var(--cost-color);
+    font-weight: bold;
+    background-color: rgba(255, 191, 64, 0.1);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 191, 64, 0.3);
+  }
