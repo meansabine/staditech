@@ -1,0 +1,141 @@
+/* Add this as a new file: landing.css */
+.landing-body {
+    background: linear-gradient(135deg, #1a1c20 0%, #24262b 100%);
+    background-image: url('images/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Oxanium', cursive;
+}
+
+.landing-container {
+    text-align: center;
+    max-width: 900px;
+    padding: 2rem;
+    background-color: rgba(26, 28, 32, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 156, 30, 0.3);
+    animation: fadeIn 1s ease-out;
+}
+
+.logo-container {
+    margin-bottom: 2rem;
+}
+
+.landing-logo {
+    max-width: 300px;
+    filter: drop-shadow(0 0 15px rgba(255, 156, 30, 0.5));
+}
+
+.landing-title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    text-shadow: 0 0 15px rgba(255, 156, 30, 0.5);
+    letter-spacing: 3px;
+    font-weight: 700;
+    animation: glow 2s infinite alternate;
+}
+
+.landing-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.enter-btn {
+    background: linear-gradient(45deg, var(--accent-color), var(--accent-color-dark));
+    color: white;
+    text-decoration: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255, 156, 30, 0.3);
+    margin-bottom: 3rem;
+}
+
+.enter-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(255, 156, 30, 0.5);
+}
+
+.hero-carousel {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.hero-silhouette {
+    width: 120px;
+    height: 180px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.hero-silhouette:hover {
+    background-color: rgba(255, 156, 30, 0.2);
+    transform: translateY(-5px);
+}
+
+.footer-info {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.version-info {
+    background-color: rgba(255, 156, 30, 0.2);
+    color: var(--accent-color);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 10px rgba(255, 156, 30, 0.5); }
+    to { text-shadow: 0 0 20px rgba(255, 156, 30, 0.8), 0 0 30px rgba(255, 156, 30, 0.5); }
+}
+
+@media (max-width: 768px) {
+    .landing-title {
+        font-size: 2rem;
+    }
+    
+    .landing-logo {
+        max-width: 200px;
+    }
+    
+    .hero-carousel {
+        gap: 1rem;
+    }
+    
+    .hero-silhouette {
+        width: 80px;
+        height: 120px;
+    }
+}

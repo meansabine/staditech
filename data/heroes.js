@@ -291,7 +291,7 @@ const heroes = {
                 {
                     name: "Nano Cola™ Nitrous",
                     cost: 11000,
-                    description: "+50 Health, when you eject from your Mech, gain 25% increased max Health and gain Nano Boost for 8s"
+                    description: "+25 Health, when you eject from your Mech, gain 5% increased max Health and gain Nano Boost for 4s"
                 },
                 {
                     name: "Chip-Damage Diverter",
@@ -726,7 +726,7 @@ const heroes = {
         ],
         powers: [
             {
-                name: "Super Visor",
+                name: "Rocket Visor",
                 description: "After using Helix Rocket, activate Tactical Visor briefly"
             },
             {
@@ -1237,7 +1237,7 @@ const heroes = {
             },
             {
                 name: "Coulder",
-                description: "Cryo-Freeze now encases you in a rolling iceball that can knock back enemies and deal 10 damage"
+                description: "Cryo-Freeze now encases you in a rolling iceball that can knock back enemies and deal 20 damage"
             },
             {
                 name: "Frost Nova",
@@ -1382,7 +1382,7 @@ const heroes = {
             },
             {
                 name: "Lifelift",
-                description: "+50% Particle Barrier Size, Increase Barrier Health by 100% of Bonus Max Life"
+                description: "+50% Particle Barrier Size, Increase Barrier Health by 50% of Bonus Max Life"
             },
             {
                 name: "Barrier Benefits",
@@ -1398,7 +1398,7 @@ const heroes = {
             },
             {
                 name: "Here To Spot You",
-                description: "Projected Barrier pulls you to the targeted ally and heals you for 15% of Max Life over 3s"
+                description: "Projected Barrier pulls you to the targeted ally and heals you for 20% of Max Life over 3s"
             },
             {
                 name: "Graviton Anomaly",
@@ -1736,7 +1736,7 @@ orisa: {
         },
         {
             name: "Restortify",
-            description: "While Fortify is active, heal for 10% of your max Life every 1s"
+            description: "While Fortify is active, heal for 5% of your max Life every 1s"
         },
         {
             name: "Centripetal Charge",
@@ -1752,7 +1752,7 @@ orisa: {
             {
                 name: "Solar Regenergy",
                 cost: 4000,
-                description: "+25 Health, after using an ability, restore your Armor equal to 5% of your Max Life"
+                description: "+25 Health, after using an ability, restore your Armor equal to 3% of your Max Life"
             },
             {
                 name: "Enhanced Target Sensors", cost: 4000,
@@ -2520,7 +2520,7 @@ lucio: {
         },
         {
             name: "Signature Shift",
-            description: "After using an ability, your next Sonic Amplifier shot shoots a volley of 6 ammo with 20% increased projectile size"
+            description: "After using an ability, your next Sonic Amplifier shot shoots a volley of 6 ammo with 80% increased projectile size"
         },
         {
             name: "Radio Edit",
@@ -2528,11 +2528,11 @@ lucio: {
         },
         {
             name: "Megaphone",
-            description: "+20% Amp It Up Duration, while Amp It Up is active, Crossfade radius is increased by 100%"
+            description: "+15% Amp It Up Duration, while Amp It Up is active, Crossfade radius is increased by 100%"
         },
         {
             name: "Crowd Pleaser",
-            description: "After using Soundwave, heal all allies affected by Crossfade for 200% of Crossfade healing"
+            description: "After using Soundwave, heal all allies affected by Crossfade for 150% of Crossfade healing"
         },
         {
             name: "Let's Bounce",
@@ -2581,7 +2581,7 @@ lucio: {
         survival: [
             {
                 name: "B-Side Bop", cost: 10000,
-                description: "+25 Health, +25% Melee Damage, after using Soundwave, your next Quick Melee grants decaying Overhealth equal to 100% of damage dealt"
+                description: "+50 Health, +25% Melee Damage, after using Soundwave, your next Quick Melee grants decaying Overhealth equal to 100% of damage dealt"
             },
             {
                 name: "Riff Repeater", cost: 10000,
@@ -2661,7 +2661,7 @@ juno: {
         },
         {
             name: "Cosmic Coolant",
-            description: "Pulsar Torpedoes cooldown is reduced by 1s for each target it hits"
+            description: "Pulsar Torpedoes cooldown is reduced by 0.5s for each target it hits"
         },
         {
             name: "Medicinal Missiles",
@@ -2719,7 +2719,7 @@ juno: {
             {
                 name: "PulStar Destroyers",
                 cost: 3200,
-                description: "+15% Ability Power, Pulsar Torpedoes explode on hit, deal 20 damage to nearby enemies"
+                description: "+10% Ability Lifesteal, Pulsar Torpedoes explode on hit, deal 20 damage to nearby enemies"
             },
             {
                 name: "Pulse Spike", cost: 10000,

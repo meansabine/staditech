@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -8,137 +5,332 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Staditech Builder - Overwatch 2 Stadium Builder</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&family=Montserrat:wght@400;500;600&display=swap">
         <link rel="stylesheet" href="styles.css">
     </head>
 <body>
     <header>
-        <div class="logo">STADITECH <span>BUILDER</span></div>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Staditech Builder Logo" class="header-logo">
+        </div>
         <div class="subtitle">Overwatch 2 Stadium Mode Build Creator</div>
         <div class="header-actions">
             <a href="https://discord.gg/bdgwvCqPJd" target="_blank" class="discord-btn">
                 <i class="fab fa-discord"></i> Join Discord
             </a>
-            <div class="version-tag">v0.3 Beta</div>
+            <div class="version-tag">v0.4 Beta</div>
         </div>
     </header>
     
     <div class="container">
-        <h1>Select a Hero</h1>
-        <div class="hero-selector" id="hero-selector">
-            <!-- Heroes will be dynamically added here -->
-        </div>
-        
-        <div id="hero-info">
-            <!-- Hero details will be dynamically added here -->
-        </div>
-        
-        <div id="hero-build-container" style="display: none;">
-            <!-- Selection summary -->
-            <div class="selection-summary">
-                <h3>Selected Powers (<span id="powers-counter">0</span>/4)</h3>
-                <div id="selected-powers-list" class="summary-list">
-                    <div class="empty-selection">No powers selected yet</div>
+        <div class="main-content">
+            <div class="content-area">
+                <h1>Build Your Stadium Hero</h1>
+                
+                <div class="hero-selector-container">
+                    <div class="role-filters">
+                        <div class="role-filter active" data-role="all">All Heroes</div>
+                        <div class="role-filter" data-role="Tank">Tanks</div>
+                        <div class="role-filter" data-role="Damage">Damage</div>
+                        <div class="role-filter" data-role="Support">Support</div>
+                    </div>
+                    <div class="hero-selector" id="hero-selector">
+                        <!-- Heroes will be dynamically added here -->
+                    </div>
+                </div>
+            
+                <div id="hero-info">
+                    <!-- Hero details will be dynamically added here -->
                 </div>
                 
-                <h3>Selected Items (<span id="items-counter">0</span>/6)</h3>
-                <div id="selected-items-list" class="summary-list">
-                    <div class="empty-selection">No items selected yet</div>
-                </div>
-                
-                <h3>Total Cost: <span id="total-cost" class="item-cost">0</span> Stadium Cash</h3>
-                
-                <div class="build-actions">
-                    <button id="save-current-build" class="action-btn">
-                        <i class="fas fa-save"></i> Save Build
-                    </button>
-                    <button id="import-build-btn" class="action-btn">
-                        <i class="fas fa-file-import"></i> Import Build
-                    </button>
-                    <button id="show-saved-builds-btn" class="action-btn">
-                        <i class="fas fa-folder-open"></i> Saved Builds
-                    </button>
-                    
-                    <!-- Update the Saved Builds Panel to be positioned as a dropdown -->
-                    <div id="saved-builds-panel" class="saved-builds-panel dropdown-panel">
-                        <div class="saved-builds-title">
-                            <h3>Your Saved Builds</h3>
-                            <button id="close-saved-builds">
-                                <i class="fas fa-times"></i> Close
+                <div id="hero-build-container" style="display: none;">
+                    <!-- Selection summary -->
+                    <div class="selection-summary">
+                        <h3>Selected Powers (<span id="powers-counter">0</span>/4)</h3>
+                        <div id="selected-powers-list" class="summary-list">
+                            <div class="empty-selection">No powers selected yet</div>
+                        </div>
+                        
+                        <h3>Selected Items (<span id="items-counter">0</span>/6)</h3>
+                        <div id="selected-items-list" class="summary-list">
+                            <div class="empty-selection">No items selected yet</div>
+                        </div>
+                        
+                        <h3>Total Cost: <span id="total-cost" class="item-cost">0</span> Stadium Cash</h3>
+                        
+                        <div class="build-actions">
+                            <button id="save-current-build" class="action-btn">
+                                <i class="fas fa-save"></i> Save Build
                             </button>
+                            <button id="import-build-btn" class="action-btn">
+                                <i class="fas fa-file-import"></i> Import Build
+                            </button>
+                            <button id="show-saved-builds-btn" class="action-btn">
+                                <i class="fas fa-folder-open"></i> Saved Builds
+                            </button>
+                            
+                            <!-- Saved Builds Panel -->
+                            <div id="saved-builds-panel" class="saved-builds-panel dropdown-panel">
+                                <div class="saved-builds-title">
+                                    <h3>Your Saved Builds</h3>
+                                    <button id="close-saved-builds">
+                                        <i class="fas fa-times"></i> Close
+                                    </button>
+                                </div>
+                                <div id="saved-builds-list" class="saved-builds-list">
+                                    <!-- Saved builds will be dynamically added here -->
+                                </div>
+                            </div>
                         </div>
-                        <div id="saved-builds-list" class="saved-builds-list">
-                            <!-- Saved builds will be dynamically added here -->
+                    </div>
+                    
+                    <!-- Tab Navigation -->
+                    <div class="tab-navigation" id="tab-navigation">
+                        <button class="tab-button active" data-tab="powers">
+                            <i class="fas fa-bolt"></i> Powers
+                        </button>
+                        <button class="tab-button" data-tab="hero-items">
+                            <i class="fas fa-toolbox"></i> Hero Items
+                        </button>
+                        <button class="tab-button" data-tab="universal-items">
+                            <i class="fas fa-globe"></i> Universal Items
+                        </button>
+                    </div>
+                    
+                    <!-- Pages -->
+                    <div id="pages-container">
+                        <!-- Hero Overview Page (Combined with Abilities) -->
+                        <div id="overview-page" class="page active">
+                            <!-- Content will be dynamically added here -->
                         </div>
+                        
+                        <div id="powers-page" class="page">
+                            <!-- Powers content will be dynamically added here -->
+                        </div>
+                        
+                        <div id="hero-items-page" class="page">
+                            <!-- Hero-specific items content will be dynamically added here -->
+                        </div>
+                        
+                        <div id="universal-items-page" class="page">
+                            <!-- Universal items content will be dynamically added here -->
+                        </div>
+                    </div>
+                    
+                    <div class="share-build" id="share-build-container">
+                        <button class="share-btn glow-effect" id="share-btn">
+                            <i class="fas fa-share-alt"></i> Share Build
+                        </button>
+                        <div class="beta-notice">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>v0.4 Beta - Bugs are expected. Please report them in our Discord.</span>
+                        </div>
+                        <div id="build-code" class="build-code">
+                            <!-- Build code will be dynamically added here -->
+                        </div>
+                        <!-- Hidden textarea for copy functionality -->
+                        <textarea id="build-code-text" class="build-code-text"></textarea>
                     </div>
                 </div>
             </div>
             
-            <!-- Tab Navigation -->
-            <div class="tab-navigation" id="tab-navigation">
-                <button class="tab-button active" data-tab="overview">
-                    <i class="fas fa-user"></i> Hero Overview
-                </button>
-                <button class="tab-button" data-tab="powers">
-                    <i class="fas fa-bolt"></i> Powers
-                </button>
-                <button class="tab-button" data-tab="hero-items">
-                    <i class="fas fa-toolbox"></i> Hero Items
-                </button>
-                <button class="tab-button" data-tab="universal-items">
-                    <i class="fas fa-globe"></i> Universal Items
-                </button>
-            </div>
             
-            <!-- Pages -->
-            <div id="pages-container">
-                <!-- Hero Overview Page (Combined with Abilities) -->
-                <div id="overview-page" class="page active">
-                    <!-- Content will be dynamically added here -->
+        </div>
+        <div class="persistent-build-summary" id="persistent-build-summary">
+            <div class="persistent-hero-info">
+                <div class="persistent-hero-icon">
+                    <!-- Hero icon will be added dynamically -->
                 </div>
-                
-                <div id="powers-page" class="page">
-                    <!-- Powers content will be dynamically added here -->
-                </div>
-                
-                <div id="hero-items-page" class="page">
-                    <!-- Hero-specific items content will be dynamically added here -->
-                </div>
-                
-                <div id="universal-items-page" class="page">
-                    <!-- Universal items content will be dynamically added here -->
+                <div class="persistent-hero-details">
+                    <h3 id="persistent-hero-name">Select a Hero</h3>
+                    <div id="persistent-hero-role" class="persistent-hero-role">-</div>
                 </div>
             </div>
             
-            <div class="share-build" id="share-build-container">
-                <button class="share-btn glow-effect" id="share-btn">
-                    <i class="fas fa-share-alt"></i> Share Build
-                </button>
-                <div class="beta-notice">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>v0.3 Beta - Bugs are expected. Please report them in our Discord.</span>
+            <div class="stats-section">
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/life.png" alt="Life">
+                    </div>
+                    <div class="stat-name">LIFE</div>
+                    <div class="life-bar-container" id="life-bar-container">
+                        <!-- Life segments will be added dynamically -->
+                    </div>
+                    <div class="stat-value" id="persistent-health">225</div>
                 </div>
-                <div id="build-code" class="build-code">
-                    <!-- Build code will be dynamically added here -->
+                
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/weapon-power.png" alt="Weapon Power">
+                    </div>
+                    <div class="stat-name">WEAPON POWER</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="weapon-power-bar"></div>
+                    </div>
+                    <div class="stat-value" id="weapon-power-value">0%</div>
                 </div>
-                <!-- Hidden textarea for copy functionality -->
-                <textarea id="build-code-text" class="build-code-text"></textarea>
+                
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/ability-power.png" alt="Ability Power">
+                    </div>
+                    <div class="stat-name">ABILITY POWER</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="ability-power-bar"></div>
+                    </div>
+                    <div class="stat-value" id="ability-power-value">0%</div>
+                </div>
+                
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/attack-speed.png" alt="Attack Speed">
+                    </div>
+                    <div class="stat-name">ATTACK SPEED</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="attack-speed-bar"></div>
+                    </div>
+                    <div class="stat-value" id="attack-speed-value">0%</div>
+                </div>
+                
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/cooldown-reduction.png" alt="Cooldown Reduction">
+                    </div>
+                    <div class="stat-name">COOLDOWN REDUCTION</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="cooldown-bar"></div>
+                    </div>
+                    <div class="stat-value" id="cooldown-value">0%</div>
+                </div>
+                
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/max-ammo.png" alt="Max Ammo">
+                    </div>
+                    <div class="stat-name">MAX AMMO</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="max-ammo-bar"></div>
+                    </div>
+                    <div class="stat-value" id="max-ammo-value">0%</div>
+                </div>
+                
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/weapon-lifesteal.png" alt="Weapon Lifesteal">
+                    </div>
+                    <div class="stat-name">WEAPON LIFESTEAL</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="weapon-lifesteal-bar"></div>
+                    </div>
+                    <div class="stat-value" id="weapon-lifesteal-value">0%</div>
+                </div>
+                
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/ability-lifesteal.png" alt="Ability Lifesteal">
+                    </div>
+                    <div class="stat-name">ABILITY LIFESTEAL</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="ability-lifesteal-bar"></div>
+                    </div>
+                    <div class="stat-value" id="ability-lifesteal-value">0%</div>
+                </div>
+                
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/move-speed.png" alt="Move Speed">
+                    </div>
+                    <div class="stat-name">MOVE SPEED</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="move-speed-bar"></div>
+                    </div>
+                    <div class="stat-value" id="move-speed-value">0%</div>
+                </div>
+                
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/reload-speed.png" alt="Reload Speed">
+                    </div>
+                    <div class="stat-name">RELOAD SPEED</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="reload-speed-bar"></div>
+                    </div>
+                    <div class="stat-value" id="reload-speed-value">0%</div>
+                </div>
+                
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/melee-damage.png" alt="Melee Damage">
+                    </div>
+                    <div class="stat-name">MELEE DAMAGE</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="melee-damage-bar"></div>
+                    </div>
+                    <div class="stat-value" id="melee-damage-value">0%</div>
+                </div>
+                
+                <div class="stat-row">
+                    <div class="stat-icon">
+                        <img src="images/stats/critical-damage.png" alt="Critical Damage">
+                    </div>
+                    <div class="stat-name">CRITICAL DAMAGE</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="critical-damage-bar"></div>
+                    </div>
+                    <div class="stat-value" id="critical-damage-value">0%</div>
+                </div>
             </div>
             
-            <!-- Saved Builds Panel -->
-            <div id="saved-builds-panel" class="saved-builds-panel">
-                <div class="saved-builds-title">
-                    <h3>Your Saved Builds</h3>
-                    <button id="close-saved-builds">
-                        <i class="fas fa-times"></i> Close
-                    </button>
+            <!-- Ability Navigation -->
+            <!-- Ability Navigation -->
+<div class="ability-navigation">
+    <h4><i class="fas fa-bolt"></i> Abilities</h4>
+    <div class="ability-carousel" id="ability-carousel">
+        <!-- Ability slides will be added dynamically -->
+    </div>
+    <div class="nav-arrows">
+        <button class="nav-arrow" id="prev-ability"><i class="fas fa-chevron-left"></i></button>
+        <button class="nav-arrow" id="next-ability"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="ability-indicator" id="ability-indicator">
+        <!-- Indicator dots will be added dynamically -->
+    </div>
+</div>
+            
+            <div class="persistent-build-details">
+                <div class="persistent-powers">
+                    <div class="persistent-powers-header">
+                        <span>Powers (<span id="persistent-powers-count">0</span>/4)</span>
+                    </div>
+                    <div class="persistent-powers-list" id="persistent-powers-list">
+                        <!-- Powers will be added dynamically -->
+                    </div>
                 </div>
-                <div id="saved-builds-list" class="saved-builds-list">
-                    <!-- Saved builds will be dynamically added here -->
+                
+                <div class="persistent-items">
+                    <div class="persistent-items-header">
+                        <span>Items (<span id="persistent-items-count">0</span>/6)</span>
+                        <span class="persistent-total-cost">Total: <span id="persistent-total-cost">0</span></span>
+                    </div>
+                    <div class="persistent-items-list" id="persistent-items-list">
+                        <!-- Items will be added dynamically -->
+                    </div>
                 </div>
+            </div>
+            
+            <div class="persistent-actions">
+                <button id="persistent-save" class="persistent-action-btn">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button id="persistent-share" class="persistent-action-btn">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
             </div>
         </div>
     </div>
+    <!-- Enhanced persistent build summary -->
+    <!-- Replace the content of the persistent-build-summary div -->
+
     
     <!-- Import Build Modal -->
     <div id="import-modal" class="import-modal">
@@ -172,104 +364,100 @@
     <div class="floating-share-btn" id="floating-share-btn">
         <i class="fas fa-share-alt"></i>
     </div>
-    <!-- Privacy Policy Modal -->
-<div id="privacy-modal" class="modal">
-    <div class="modal-content">
-        <button id="close-privacy-modal" class="modal-close">
-            <i class="fas fa-times"></i>
-        </button>
-        <h3 class="modal-title">Privacy Policy</h3>
-        <div class="privacy-content">
-            <p><strong>Last Updated: April 29, 2025</strong></p>
-            <h4>1. Information We Collect</h4>
-            <p>When you save a build in Staditech Builder, we collect the following information:</p>
-            <ul>
-                <li>Selected hero</li>
-                <li>Selected powers</li>
-                <li>Selected items</li>
-                <li>Build name you provide</li>
-                <li>Date and time of save</li>
-            </ul>
-            
-            <h4>2. How We Use Your Information</h4>
-            <p>We use this information to:</p>
-            <ul>
-                <li>Save your builds locally on your device</li>
-                <li>Share your builds via a unique URL when you choose to do so</li>
-                <li>Post build information to our Discord community when you save a build</li>
-            </ul>
-            
-            <h4>3. Discord Integration</h4>
-            <p>When you save a build, details about the build and a link to access it are automatically shared to our Discord community. This helps other players discover interesting builds and strategies. NO personal data is ever collected, sent nor stored.</p>
-            
-            <h4>4. Data Storage</h4>
-            <p>Your builds are primarily stored in your browser's local storage and are not accessible to others unless you explicitly share them. If you clear your browser data, your saved builds will be deleted.</p>
-            
-            <h4>5. Contact Us</h4>
-            <p>If you have any questions about this Privacy Policy, please join our Discord server.</p>
-        </div>
-    </div>
-</div>
-<div id="consent-popup" class="consent-popup">
-    <div class="consent-content">
-        <div class="popup-logo">STADITECH <span>BUILDER</span></div>
-        <h3>Welcome to Staditech Builder!</h3>
-        <p>We'd like to share your builds with our community via Discord when you save them. No personal data is ever collected, stored or transferred - only your hero selection, powers, and items.</p>
-        <div class="consent-buttons">
-            <button id="accept-consent" class="consent-btn consent-accept">Allow Build Sharing</button>
-            <button id="decline-consent" class="consent-btn consent-decline">No Thanks</button>
-        </div>
-        <button id="close-consent" class="consent-close">×</button>
-    </div>
-</div>
-<!-- Add this right before the closing </body> tag -->
-<!-- Add this right before the closing </body> tag -->
-<script>
-    // Uncomment the line below to reset the consent setting (for testing)
-    // localStorage.removeItem('buildSharingConsent');
     
-    // Consent popup handling
-    (function() {
-        // Get elements
-        var popup = document.getElementById('consent-popup');
-        var acceptBtn = document.getElementById('accept-consent');
-        var declineBtn = document.getElementById('decline-consent');
-        
-        // Check if consent value exists in localStorage
-        if(localStorage.getItem('buildSharingConsent') === null) {
-            // First visit - show the popup
-            popup.style.display = 'flex';
-            console.log('Showing consent popup - first visit');
-        } else {
-            // Not first visit - hide the popup
-            popup.style.display = 'none';
-            console.log('Consent already set to: ' + localStorage.getItem('buildSharingConsent'));
-        }
-        
-        // Direct click handlers for buttons
-        if(acceptBtn) {
-            acceptBtn.onclick = function() {
-                localStorage.setItem('buildSharingConsent', 'true');
+    <!-- Privacy Policy Modal -->
+    <div id="privacy-modal" class="modal">
+        <div class="modal-content">
+            <button id="close-privacy-modal" class="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Privacy Policy</h3>
+            <div class="privacy-content">
+                <p><strong>Last Updated: April 29, 2025</strong></p>
+                <h4>1. Information We Collect</h4>
+                <p>When you save a build in Staditech Builder, we collect the following information:</p>
+                <ul>
+                    <li>Selected hero</li>
+                    <li>Selected powers</li>
+                    <li>Selected items</li>
+                    <li>Build name you provide</li>
+                    <li>Date and time of save</li>
+                </ul>
+                
+                <h4>2. How We Use Your Information</h4>
+                <p>We use this information to:</p>
+                <ul>
+                    <li>Save your builds locally on your device</li>
+                    <li>Share your builds via a unique URL when you choose to do so</li>
+                    <li>Post build information to our Discord community when you save a build</li>
+                </ul>
+                
+                <h4>3. Discord Integration</h4>
+                <p>When you save a build, details about the build and a link to access it are automatically shared to our Discord community. This helps other players discover interesting builds and strategies. NO personal data is ever collected, sent nor stored.</p>
+                
+                <h4>4. Data Storage</h4>
+                <p>Your builds are primarily stored in your browser's local storage and are not accessible to others unless you explicitly share them. If you clear your browser data, your saved builds will be deleted.</p>
+                
+                <h4>5. Contact Us</h4>
+                <p>If you have any questions about this Privacy Policy, please join our Discord server.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="consent-popup" class="consent-popup">
+        <div class="consent-content">
+            <div class="popup-logo">STADITECH <span>BUILDER</span></div>
+            <h3>Welcome to Staditech Builder!</h3>
+            <p>We'd like to share your builds with our community via Discord when you save them. No personal data is ever collected, stored or transferred - only your hero selection, powers, and items.</p>
+            <div class="consent-buttons">
+                <button id="accept-consent" class="consent-btn consent-accept">Allow Build Sharing</button>
+                <button id="decline-consent" class="consent-btn consent-decline">No Thanks</button>
+            </div>
+            <button id="close-consent" class="consent-close">×</button>
+        </div>
+    </div>
+    
+    <script>
+        // Consent popup handling
+        (function() {
+            // Get elements
+            var popup = document.getElementById('consent-popup');
+            var acceptBtn = document.getElementById('accept-consent');
+            var declineBtn = document.getElementById('decline-consent');
+            
+            // Check if consent value exists in localStorage
+            if(localStorage.getItem('buildSharingConsent') === null) {
+                // First visit - show the popup
+                popup.style.display = 'flex';
+                console.log('Showing consent popup - first visit');
+            } else {
+                // Not first visit - hide the popup
                 popup.style.display = 'none';
-                alert('Thank you! Your builds will be shared with our community.');
-                console.log('Consent accepted');
-            };
-        }
-        
-        if(declineBtn) {
-            declineBtn.onclick = function() {
-                localStorage.setItem('buildSharingConsent', 'false');
-                popup.style.display = 'none';
-                alert('Your preference has been saved. Builds will not be shared.');
-                console.log('Consent declined');
-            };
-        }
-        
-        // Debug localStorage
-        console.log('Current consent setting: ' + localStorage.getItem('buildSharingConsent'));
-    })();
+                console.log('Consent already set to: ' + localStorage.getItem('buildSharingConsent'));
+            }
+            
+            // Direct click handlers for buttons
+            if(acceptBtn) {
+                acceptBtn.onclick = function() {
+                    localStorage.setItem('buildSharingConsent', 'true');
+                    popup.style.display = 'none';
+                    alert('Thank you! Your builds will be shared with our community.');
+                    console.log('Consent accepted');
+                };
+            }
+            
+            if(declineBtn) {
+                declineBtn.onclick = function() {
+                    localStorage.setItem('buildSharingConsent', 'false');
+                    popup.style.display = 'none';
+                    alert('Your preference has been saved. Builds will not be shared.');
+                    console.log('Consent declined');
+                };
+            }
+            
+            // Debug localStorage
+            console.log('Current consent setting: ' + localStorage.getItem('buildSharingConsent'));
+        })();
     </script>
 </body>
-<!-- Update the footer in index.html -->
-
 </html>

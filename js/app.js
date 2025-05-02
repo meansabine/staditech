@@ -20,9 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupShareFeatures();
 
     // Call this after displaying a hero
-    document.addEventListener('heroSelected', function() {
-        setupItemFilters();
-    });
     // Define base stats for each hero
     const heroBaseStats = {
         reaper: {
@@ -237,18 +234,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let statModifiers = {};
     
     // Pattern to match stat patterns in item descriptions
-    const statPatterns = [
-        { regex: /\+(\d+)\s*Health/g, stat: 'Health', isPercentage: false },
-        { regex: /\+(\d+)\s*Armor/g, stat: 'Armor', isPercentage: false },
-        { regex: /\+(\d+)\s*Shield/g, stat: 'Shield', isPercentage: false },
-        { regex: /\+(\d+)%\s*Weapon Power/g, stat: 'Weapon Power', isPercentage: true },
-        { regex: /\+(\d+)%\s*Ability Power/g, stat: 'Ability Power', isPercentage: true },
-        { regex: /\+(\d+)%\s*Attack Speed/g, stat: 'Attack Speed', isPercentage: true },
-        { regex: /\+(\d+)%\s*Move Speed/g, stat: 'Move Speed', isPercentage: true },
-        { regex: /\+(\d+)%\s*Cooldown Reduction/g, stat: 'Cooldown Reduction', isPercentage: true },
-        { regex: /\+(\d+)%\s*Weapon Lifesteal/g, stat: 'Weapon Lifesteal', isPercentage: true },
-        { regex: /\+(\d+)%\s*Ability Lifesteal/g, stat: 'Ability Lifesteal', isPercentage: true }
-    ];
+    // Add or update this near the top of app.js
+const statPatterns = [
+    { regex: /\+(\d+)\s*Health/g, stat: 'Health', isPercentage: false, baseValue: 0 },
+    { regex: /\+(\d+)\s*Armor/g, stat: 'Armor', isPercentage: false, baseValue: 0 },
+    { regex: /\+(\d+)\s*Shield/g, stat: 'Shield', isPercentage: false, baseValue: 0 },
+    { regex: /\+(\d+)%\s*Weapon Power/g, stat: 'Weapon Power', isPercentage: true, baseValue: 100 },
+    { regex: /\+(\d+)%\s*Ability Power/g, stat: 'Ability Power', isPercentage: true, baseValue: 100 },
+    { regex: /\+(\d+)%\s*Attack Speed/g, stat: 'Attack Speed', isPercentage: true, baseValue: 100 },
+    { regex: /\+(\d+)%\s*Move Speed/g, stat: 'Move Speed', isPercentage: true, baseValue: 100 },
+    { regex: /\+(\d+)%\s*Cooldown Reduction/g, stat: 'Cooldown Reduction', isPercentage: true, baseValue: 0 },
+    { regex: /\+(\d+)%\s*Weapon Lifesteal/g, stat: 'Weapon Lifesteal', isPercentage: true, baseValue: 0 },
+    { regex: /\+(\d+)%\s*Ability Lifesteal/g, stat: 'Ability Lifesteal', isPercentage: true, baseValue: 0 },
+    { regex: /\+(\d+)%\s*Reload Speed/g, stat: 'Reload Speed', isPercentage: true, baseValue: 0 },
+    { regex: /\+(\d+)%\s*Melee Damage/g, stat: 'Melee Damage', isPercentage: true, baseValue: 0 },
+    { regex: /\+(\d+)%\s*Critical Damage/g, stat: 'Critical Damage', isPercentage: true, baseValue: 0 }
+];
     
     // Helper function to map item names to icon filenames (PNG format)
     function getIconFileName(itemName) {
@@ -322,6 +323,135 @@ document.addEventListener('DOMContentLoaded', () => {
         // Remove error handler to prevent infinite loops
         img.onerror = null;
     }
+    function updateExtendedStatsDisplay() {
+        if (!selectedHero) return;
+        
+        const hero = heroes[selectedHero];
+        
+        // Check if stats section elements exist at all before proceeding
+        if (!document.getElementById('life-bar-container')) {
+            // Elements don't exist yet - bail out early
+            return;
+        }
+        
+        try {
+            // Update stat bars
+    updateStatBar('weapon-power-bar', currentHeroStats['Weapon Power'] || 100);
+    updateStatBar('ability-power-bar', currentHeroStats['Ability Power'] || 100);
+    updateStatBar('attack-speed-bar', currentHeroStats['Attack Speed'] || 100);
+    updateStatBar('cooldown-bar', currentHeroStats['Cooldown Reduction'] || 0, 50);
+    updateStatBar('max-ammo-bar', currentHeroStats['Max Ammo'] || 100);
+    updateStatBar('weapon-lifesteal-bar', currentHeroStats['Weapon Lifesteal'] || 0, 50);
+    updateStatBar('ability-lifesteal-bar', currentHeroStats['Ability Lifesteal'] || 0, 50);
+    updateStatBar('move-speed-bar', currentHeroStats['Move Speed'] || 100, 150);
+    updateStatBar('reload-speed-bar', currentHeroStats['Reload Speed'] || 0, 50);
+    updateStatBar('melee-damage-bar', currentHeroStats['Melee Damage'] || 0, 50);
+    updateStatBar('critical-damage-bar', currentHeroStats['Critical Damage'] || 0, 50);
+    
+    // Update health bar segments
+    updateHealthBarSegments(currentHeroStats['Health'] || hero.health);
+            
+            // Update percentage-based stats
+            const statMappings = [
+                { stat: 'Weapon Power', barId: 'weapon-power-bar', valueId: 'weapon-power-value' },
+                { stat: 'Ability Power', barId: 'ability-power-bar', valueId: 'ability-power-value' },
+                { stat: 'Attack Speed', barId: 'attack-speed-bar', valueId: 'attack-speed-value' },
+                { stat: 'Cooldown Reduction', barId: 'cooldown-bar', valueId: 'cooldown-value' },
+                { stat: 'Max Ammo', barId: 'max-ammo-bar', valueId: 'max-ammo-value' },
+                { stat: 'Weapon Lifesteal', barId: 'weapon-lifesteal-bar', valueId: 'weapon-lifesteal-value' },
+                { stat: 'Ability Lifesteal', barId: 'ability-lifesteal-bar', valueId: 'ability-lifesteal-value' },
+                { stat: 'Move Speed', barId: 'move-speed-bar', valueId: 'move-speed-value' },
+                { stat: 'Reload Speed', barId: 'reload-speed-bar', valueId: 'reload-speed-value' },
+                { stat: 'Melee Damage', barId: 'melee-damage-bar', valueId: 'melee-damage-value' },
+                { stat: 'Critical Damage', barId: 'critical-damage-bar', valueId: 'critical-damage-value' }
+            ];
+            
+            statMappings.forEach(mapping => {
+                const baseValue = 100; // Default base value
+                const currentValue = currentHeroStats[mapping.stat] || baseValue;
+                const diff = currentValue - baseValue;
+                
+                // Set the bar width (max 100%)
+                const barElement = document.getElementById(mapping.barId);
+                if (barElement) {
+                    // Calculate percentage (0-100%)
+                    let percentage = (currentValue / 200) * 100; // Assuming 200% is max for display
+                    percentage = Math.min(100, Math.max(0, percentage)); // Clamp between 0-100
+                    barElement.style.width = `${percentage}%`;
+                }
+                
+                // Update the value text
+                const valueElement = document.getElementById(mapping.valueId);
+                if (valueElement) {
+                    if (diff !== 0) {
+                        valueElement.textContent = `${diff > 0 ? '+' : ''}${diff}%`;
+                    } else {
+                        valueElement.textContent = '0%';
+                    }
+                }
+            });
+        } catch (error) {
+            console.error("Error updating extended stats display:", error);
+        }
+    }
+    function updateAllStats() {
+        // For each stat, check if we have a current value
+        const stats = [
+            "Weapon Power", "Ability Power", "Attack Speed", "Move Speed", 
+            "Cooldown Reduction", "Weapon Lifesteal", "Ability Lifesteal",
+            "Reload Speed", "Melee Damage", "Critical Damage", "Max Ammo"
+        ];
+        
+        for (const stat of stats) {
+            // Get base value
+            const baseValue = stat === "Weapon Power" || stat === "Ability Power" || 
+                              stat === "Attack Speed" || stat === "Move Speed" || 
+                              stat === "Max Ammo" ? 100 : 0;
+                              
+            // Get current value
+            const currentValue = currentHeroStats[stat] || baseValue;
+            
+            // Calculate difference
+            const diff = currentValue - baseValue;
+            
+            // Update display
+            const valueElement = document.getElementById(`${stat.toLowerCase().replace(/\s+/g, '-')}-value`);
+            if (valueElement) {
+                valueElement.textContent = diff !== 0 ? `${diff > 0 ? '+' : ''}${diff}%` : '0%';
+            }
+            
+            // Update bar
+            const barElement = document.getElementById(`${stat.toLowerCase().replace(/\s+/g, '-')}-bar`);
+            if (barElement) {
+                // Different max values based on stat type
+                let maxValue = 200;
+                if (stat === "Cooldown Reduction" || stat === "Weapon Lifesteal" || 
+                    stat === "Ability Lifesteal" || stat === "Reload Speed" || 
+                    stat === "Melee Damage" || stat === "Critical Damage") {
+                    maxValue = 50;
+                } else if (stat === "Move Speed") {
+                    maxValue = 150;
+                }
+                
+                // Calculate width percentage
+                const range = maxValue - baseValue;
+                const percentage = Math.min(100, Math.max(0, ((currentValue - baseValue) / range) * 100));
+                barElement.style.width = `${percentage}%`;
+            }
+        }
+        
+        // Update health bar
+        const healthValue = currentHeroStats['Health'] || 
+                           (selectedHero ? heroes[selectedHero].health : 0);
+        const healthElement = document.getElementById('persistent-health');
+        if (healthElement) {
+            healthElement.textContent = healthValue;
+        }
+        
+        // Update health bar segments
+        updateHealthBarSegments(healthValue);
+        updatePersistentAbilityStats();
+    }
     
     // When updating the DOM, add error handlers to all images
     function setupImageErrorHandlers() {
@@ -357,21 +487,144 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pages = document.querySelectorAll('.page');
                 pages.forEach(page => page.classList.remove('active'));
                 document.getElementById(`${tabName}-page`).classList.add('active');
-                
-                // When switching to overview tab, update with current stats
-                if (tabName === 'overview') {
-                    updateOverviewPage();
-                }
             });
         });
+        
+        // Set Powers tab as default active tab
+        const powersTab = document.querySelector('.tab-button[data-tab="powers"]');
+        if (powersTab) {
+            powersTab.click();
+        }
     }
-    
+    function ensurePersistentBuildSummary() {
+        const container = document.getElementById('persistent-build-summary');
+        
+        // If the container doesn't exist or is empty, create it
+        if (!container || container.children.length === 0) {
+            // Create the persistent build summary structure in the DOM
+            document.body.insertAdjacentHTML('beforeend', `
+                <div class="persistent-build-summary" id="persistent-build-summary">
+                    <div class="persistent-hero-info">
+                        <div class="persistent-hero-icon">
+                            <!-- Hero icon -->
+                        </div>
+                        <div class="persistent-hero-details">
+                            <h3 id="persistent-hero-name">Select a Hero</h3>
+                            <div id="persistent-hero-role" class="persistent-hero-role">-</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats Section -->
+                    <div class="stats-section">
+                        <div class="stat-row">
+                            <div class="stat-icon">
+                                <img src="images/stats/life.png" alt="Life">
+                            </div>
+                            <div class="stat-name">LIFE</div>
+                            <div class="life-bar-container" id="life-bar-container">
+                                <!-- Life segments will be added dynamically -->
+                            </div>
+                            <div class="stat-value" id="persistent-health">0</div>
+                        </div>
+                        
+                        <!-- Add all other stat rows here -->
+                        <!-- ... -->
+                        
+                    </div>
+                    
+                    <div class="persistent-build-details">
+                        <div class="persistent-powers">
+                            <div class="persistent-powers-header">
+                                <span>Powers (<span id="persistent-powers-count">0</span>/4)</span>
+                            </div>
+                            <div class="persistent-powers-list" id="persistent-powers-list">
+                                <div class="empty-selection">No powers selected</div>
+                            </div>
+                        </div>
+                        
+                        <div class="persistent-items">
+                            <div class="persistent-items-header">
+                                <span>Items (<span id="persistent-items-count">0</span>/6)</span>
+                                <span class="persistent-total-cost">Total: <span id="persistent-total-cost">0</span></span>
+                            </div>
+                            <div class="persistent-items-list" id="persistent-items-list">
+                                <div class="empty-selection">No items selected</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="persistent-actions">
+                        <button id="persistent-save" class="persistent-action-btn">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                        <button id="persistent-share" class="persistent-action-btn">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                    </div>
+                </div>
+            `);
+            
+            // Add other stat rows to complete the stats section
+            const statsSection = document.querySelector('.stats-section');
+            if (statsSection) {
+                const statsToAdd = [
+                    { name: 'WEAPON POWER', icon: 'weapon-power', id: 'weapon-power' },
+                    { name: 'ABILITY POWER', icon: 'ability-power', id: 'ability-power' },
+                    { name: 'ATTACK SPEED', icon: 'attack-speed', id: 'attack-speed' },
+                    { name: 'COOLDOWN REDUCTION', icon: 'cooldown-reduction', id: 'cooldown' },
+                    { name: 'MAX AMMO', icon: 'max-ammo', id: 'max-ammo' },
+                    { name: 'WEAPON LIFESTEAL', icon: 'weapon-lifesteal', id: 'weapon-lifesteal' },
+                    { name: 'ABILITY LIFESTEAL', icon: 'ability-lifesteal', id: 'ability-lifesteal' },
+                    { name: 'MOVE SPEED', icon: 'move-speed', id: 'move-speed' },
+                    { name: 'RELOAD SPEED', icon: 'reload-speed', id: 'reload-speed' },
+                    { name: 'MELEE DAMAGE', icon: 'melee-damage', id: 'melee-damage' },
+                    { name: 'CRITICAL DAMAGE', icon: 'critical-damage', id: 'critical-damage' }
+                ];
+                
+                statsToAdd.forEach(stat => {
+                    statsSection.insertAdjacentHTML('beforeend', `
+                        <div class="stat-row">
+                            <div class="stat-icon">
+                                <img src="images/stats/${stat.icon}.png" alt="${stat.name}">
+                            </div>
+                            <div class="stat-name">${stat.name}</div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar" id="${stat.id}-bar"></div>
+                            </div>
+                            <div class="stat-value" id="${stat.id}-value">0%</div>
+                        </div>
+                    `);
+                });
+            }
+            
+            // Add event listeners for the buttons
+            document.getElementById('persistent-save')?.addEventListener('click', saveCurrentBuild);
+            document.getElementById('persistent-share')?.addEventListener('click', shareBuild);
+        }
+    }
     // Function to reset stats when hero changes
     function resetStats() {
         if (selectedHero) {
             currentHeroStats = JSON.parse(JSON.stringify(heroBaseStats[selectedHero]));
             statModifiers = {};
-            updateStatsDisplay();
+            
+            // Update all stats displays
+            updateAllStats();
+        }
+    }
+    // Find this function in app.js
+    function updateStatBar(id, value, maxValue = 200) {
+        const bar = document.getElementById(id);
+        if (bar) {
+            // For ability lifesteal and similar stats, use base of 0 instead of 100
+            const baseValue = id.includes('lifesteal') || id.includes('cooldown') || 
+                             id.includes('reload') || id.includes('melee') ||
+                             id.includes('critical') ? 0 : 100;
+            
+            // Calculate percentage (0-100%)
+            let percentage = ((value - baseValue) / (maxValue - baseValue)) * 100;
+            percentage = Math.min(100, Math.max(0, percentage)); // Clamp between 0-100
+            bar.style.width = `${percentage}%`;
         }
     }
     
@@ -379,18 +632,50 @@ document.addEventListener('DOMContentLoaded', () => {
     function parseItemStats(itemId, description, isAdding) {
         const multiplier = isAdding ? 1 : -1;
         
-        statPatterns.forEach(pattern => {
-            const matches = [...description.matchAll(pattern.regex)];
+        // Clear existing stats for this item
+        if (!statModifiers[itemId]) {
+            statModifiers[itemId] = {};
+        }
+        
+        // Health, Armor, Shield
+        const healthMatch = description.match(/\+(\d+)\s*Health/);
+        if (healthMatch) {
+            statModifiers[itemId]['Health'] = parseInt(healthMatch[1]) * multiplier;
+        }
+        
+        const armorMatch = description.match(/\+(\d+)\s*Armor/);
+        if (armorMatch) {
+            statModifiers[itemId]['Armor'] = parseInt(armorMatch[1]) * multiplier;
+        }
+        
+        const shieldMatch = description.match(/\+(\d+)\s*Shield/);
+        if (shieldMatch) {
+            statModifiers[itemId]['Shield'] = parseInt(shieldMatch[1]) * multiplier;
+        }
+        
+        // Percentage-based stats
+        const statMatches = [
+            { regex: /\+(\d+)%\s*Weapon Power/g, stat: 'Weapon Power' },
+            { regex: /\+(\d+)%\s*Ability Power/g, stat: 'Ability Power' },
+            { regex: /\+(\d+)%\s*Attack Speed/g, stat: 'Attack Speed' },
+            { regex: /\+(\d+)%\s*Move Speed/g, stat: 'Move Speed' },
+            { regex: /\+(\d+)%\s*Cooldown Reduction/g, stat: 'Cooldown Reduction' },
+            { regex: /\+(\d+)%\s*Weapon Lifesteal/g, stat: 'Weapon Lifesteal' },
+            { regex: /\+(\d+)%\s*Ability Lifesteal/g, stat: 'Ability Lifesteal' },
+            { regex: /\+(\d+)%\s*Reload Speed/g, stat: 'Reload Speed' },
+            { regex: /\+(\d+)%\s*Melee Damage/g, stat: 'Melee Damage' },
+            { regex: /\+(\d+)%\s*Critical Damage/g, stat: 'Critical Damage' },
+            { regex: /\+(\d+)%\s*Max Ammo/g, stat: 'Max Ammo' }
+        ];
+        
+        statMatches.forEach(match => {
+            const regex = match.regex;
+            const stat = match.stat;
             
-            matches.forEach(match => {
-                const value = parseFloat(match[1]);
-                
-                if (!statModifiers[itemId]) {
-                    statModifiers[itemId] = {};
-                }
-                
-                statModifiers[itemId][pattern.stat] = (pattern.isPercentage ? value : value) * multiplier;
-            });
+            const matches = [...description.matchAll(regex)];
+            if (matches.length > 0) {
+                statModifiers[itemId][stat] = parseInt(matches[0][1]) * multiplier;
+            }
         });
     }
     
@@ -423,7 +708,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Calculate the updated stats based on base values and modifiers
     function calculateUpdatedStats() {
         // Start with base stats
-        const updatedStats = { ...heroBaseStats[selectedHero] };
+        const updatedStats = {
+            'Health': selectedHero ? heroes[selectedHero].health : 0,
+            'Armor': selectedHero ? heroes[selectedHero].armor : 0,
+            'Shield': selectedHero ? heroes[selectedHero].shield : 0,
+            'Weapon Power': 100,
+            'Ability Power': 100,
+            'Attack Speed': 100,
+            'Move Speed': 100,
+            'Cooldown Reduction': 0,
+            'Weapon Lifesteal': 0,
+            'Ability Lifesteal': 0,
+            'Reload Speed': 0,
+            'Melee Damage': 0,
+            'Critical Damage': 0,
+            'Max Ammo': 100
+        };
         
         // Apply all modifiers
         for (const itemId in statModifiers) {
@@ -431,14 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             for (const stat in modifiers) {
                 const value = modifiers[stat];
-                
-                if (stat === 'Health' || stat === 'Armor' || stat === 'Shield') {
-                    // Direct addition for health, armor, shield
-                    updatedStats[stat] += value;
-                } else {
-                    // Percentage addition for other stats
-                    updatedStats[stat] += value;
-                }
+                updatedStats[stat] += value;
             }
         }
         
@@ -447,6 +740,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Function to update stats when items are selected/deselected
+    // Also update this function
     function updateStatsFromItems() {
         // Reset to base stats
         resetStats();
@@ -463,10 +757,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Calculate new stats
         calculateUpdatedStats();
         
-        // Update the UI
-        updateStatsDisplay();
+        // Update all UI displays
+        updateAllStats();
         
-        // Update overview page if active
+        // Update overview page if active 
         const overviewPageElement = document.getElementById('overview-page');
         if (overviewPageElement.classList.contains('active')) {
             updateOverviewPage();
@@ -478,8 +772,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const statsContainer = document.getElementById('hero-stats-panel');
         if (!statsContainer) return;
         
+        if (!selectedHero) return;
         const hero = heroes[selectedHero];
-        if (!hero) return;
         
         let statsHTML = `<h3>Current Stats</h3><div class="stats-grid">`;
         
@@ -549,46 +843,82 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
         
-        // Display percentage-based stats
-        const displayPercentageStats = [
-            { name: 'Weapon Power', styleClass: 'stat-weapon', maxValue: 200 },
-            { name: 'Ability Power', styleClass: 'stat-ability', maxValue: 200 },
-            { name: 'Attack Speed', styleClass: 'stat-weapon', maxValue: 200 },
-            { name: 'Move Speed', styleClass: 'stat-survival', maxValue: 150 },
-            { name: 'Cooldown Reduction', styleClass: 'stat-cooldown', maxValue: 50 },
-            { name: 'Weapon Lifesteal', styleClass: 'stat-weapon', maxValue: 50 },
-            { name: 'Ability Lifesteal', styleClass: 'stat-ability', maxValue: 50 }
-        ];
+        // Add code for armor and shield display...
+    // (Your existing code for these sections)
+    
+    // Display percentage-based stats
+    const displayPercentageStats = [
+        { name: 'Weapon Power', styleClass: 'stat-weapon', maxValue: 200 },
+        { name: 'Ability Power', styleClass: 'stat-ability', maxValue: 200 },
+        { name: 'Attack Speed', styleClass: 'stat-weapon', maxValue: 200 },
+        { name: 'Move Speed', styleClass: 'stat-survival', maxValue: 150 },
+        { name: 'Cooldown Reduction', styleClass: 'stat-cooldown', maxValue: 50 },
+        { name: 'Weapon Lifesteal', styleClass: 'stat-weapon', maxValue: 50 },
+        { name: 'Ability Lifesteal', styleClass: 'stat-ability', maxValue: 50 }
+    ];
+    
+    displayPercentageStats.forEach(stat => {
+        const baseValue = heroBaseStats[selectedHero][stat.name] || 0;
+        const currentValue = currentHeroStats[stat.name] || baseValue;
+        const diff = currentValue - baseValue;
         
-        displayPercentageStats.forEach(stat => {
-            const baseValue = heroBaseStats[selectedHero][stat.name] || 0;
-            const currentValue = currentHeroStats[stat.name] || baseValue;
-            const diff = currentValue - baseValue;
+        if (diff !== 0 || stat.name === 'Weapon Power' || stat.name === 'Ability Power') {
+            const statPercent = Math.min(100, (currentValue / stat.maxValue) * 100);
             
-            if (diff !== 0 || stat.name === 'Weapon Power' || stat.name === 'Ability Power') {
-                const statPercent = Math.min(100, (currentValue / stat.maxValue) * 100);
-                
-                statsHTML += `
-                    <div class="stat-item ${diff !== 0 ? 'modified' : ''}">
-                        <span class="stat-label">${stat.name}:</span>
-                        <div class="stat-value-container">
-                            <span class="stat-value ${stat.styleClass}">${currentValue}%${diff !== 0 ? 
-                                `<span class="stat-bonus">${diff > 0 ? '+' : ''}${diff}%</span>` : ''}
-                            </span>
-                            <div class="stat-tickbar-container">
-                                <div class="stat-tickbar ${stat.styleClass}-bar" style="width: ${statPercent}%"></div>
-                            </div>
+            statsHTML += `
+                <div class="stat-item ${diff !== 0 ? 'modified' : ''}">
+                    <span class="stat-label">${stat.name}:</span>
+                    <div class="stat-value-container">
+                        <span class="stat-value ${stat.styleClass}">${currentValue}%${diff !== 0 ? 
+                            `<span class="stat-bonus">${diff > 0 ? '+' : ''}${diff}%</span>` : ''}
+                        </span>
+                        <div class="stat-tickbar-container">
+                            <div class="stat-tickbar ${stat.styleClass}-bar" style="width: ${statPercent}%"></div>
                         </div>
                     </div>
-                `;
-            }
+                </div>
+            `;
+        }
+    });
+    
+    statsHTML += `</div>`;
+    statsContainer.innerHTML = statsHTML;
+    
+    // Also update the persistent stats
+    updatePersistentStats();
+    }
+    document.addEventListener('heroSelected', function() {
+        initAbilityCarousel();
+        updateAllStats();
+    });
+    function setupRoleFilters() {
+        const roleFilters = document.querySelectorAll('.role-filter');
+        roleFilters.forEach(filter => {
+            filter.addEventListener('click', () => {
+                // Set active class
+                roleFilters.forEach(f => f.classList.remove('active'));
+                filter.classList.add('active');
+                
+                // Filter heroes
+                const role = filter.dataset.role;
+                const heroCards = document.querySelectorAll('.hero-card');
+                
+                heroCards.forEach(card => {
+                    const heroId = card.dataset.hero;
+                    const hero = heroes[heroId];
+                    
+                    if (role === 'all' || hero.role === role) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
         });
-        
-        statsHTML += `</div>`;
-        statsContainer.innerHTML = statsHTML;
     }
     
     // Calculate modified ability stats based on current stat values
+    // Enhanced function to calculate modified ability stats for all heroes
     function calculateModifiedAbilityStats(ability, currentStats, baseStats) {
         const modifiedStats = [];
         
@@ -599,72 +929,438 @@ document.addEventListener('DOMContentLoaded', () => {
             let modifier = 0;
             let contributors = [];
             let modifierType = null;
+            let displayFormat = null;
             
-            // Try to extract numeric values
-            const numericMatch = /^(\d+(\.\d+)?)/.exec(stat.value);
-            if (numericMatch) {
-                baseValue = parseFloat(numericMatch[1]);
+            // Parse the stat value based on its format
+            
+            // 1. Pellet-based damage (e.g. "6 per pellet, 20 pellets per shot")
+            if (stat.value.includes("per pellet") && stat.value.includes("pellet")) {
+                const pelletMatch = /(\d+(\.\d+)?)\s*per pellet/.exec(stat.value);
+                const countMatch = /(\d+(\.\d+)?)\s*pellets?/.exec(stat.value);
                 
-                // Calculate modifications based on stat type
-                if (stat.label.includes("Damage")) {
-                    modifierType = "Weapon Power";
-                    // Apply weapon power modifier
-                    const weaponPowerPercent = currentStats['Weapon Power'] || 100;
-                    const weaponPowerModifier = (weaponPowerPercent - 100) / 100;
-                    modifier = baseValue * weaponPowerModifier;
-                    modifiedValue = baseValue + modifier;
+                if (pelletMatch && countMatch) {
+                    const pelletDamage = parseFloat(pelletMatch[1]);
+                    const pelletCount = parseFloat(countMatch[1]);
+                    const totalBase = pelletDamage * pelletCount;
                     
-                    // Track item contributions
-                    selectedItems.forEach(item => {
-                        if (statModifiers[item.id] && statModifiers[item.id]['Weapon Power']) {
-                            const contribution = baseValue * (statModifiers[item.id]['Weapon Power'] / 100);
-                            contributors.push({
-                                name: item.name,
-                                value: statModifiers[item.id]['Weapon Power'],
-                                contribution: contribution
-                            });
-                        }
-                    });
-                } 
-                else if (stat.label.includes("Healing")) {
+                    displayFormat = "pellet";
+                    baseValue = {
+                        pellet: pelletDamage,
+                        count: pelletCount,
+                        total: totalBase
+                    };
+                    
+                    // Apply modifier based on stat type
+                    if (stat.label.includes("Damage")) {
+                        modifierType = "Weapon Power";
+                        const weaponPowerPercent = currentStats['Weapon Power'] || 100;
+                        const weaponPowerModifier = (weaponPowerPercent - 100) / 100;
+                        
+                        const pelletMod = pelletDamage * weaponPowerModifier;
+                        const totalMod = totalBase * weaponPowerModifier;
+                        
+                        modifier = {
+                            pellet: pelletMod,
+                            total: totalMod
+                        };
+                        
+                        modifiedValue = {
+                            pellet: pelletDamage + pelletMod,
+                            count: pelletCount,
+                            total: totalBase + totalMod
+                        };
+                    }
+                }
+            }
+            else if ((stat.label.includes("Damage") || stat.value.includes("damage")) && 
+         stat.value.includes("over") && stat.value.includes("s")) {
+    
+    // Look for patterns like "30 damage over 3s" or "40 over 2 seconds"
+    const dotMatch = /(\d+(\.\d+)?)\s*(?:damage)?\s*over\s*(\d+(\.\d+)?)\s*s(?:econds?)?/i.exec(stat.value);
+    
+    if (dotMatch) {
+        const totalDamage = parseFloat(dotMatch[1]);
+        const duration = parseFloat(dotMatch[3]);
+        
+        displayFormat = "dot";
+        baseValue = {
+            total: totalDamage,
+            duration: duration,
+            dps: totalDamage / duration
+        };
+        
+        // DOT effects scale with both Weapon Power and Attack Speed
+        const weaponPowerPercent = currentStats['Weapon Power'] || 100;
+        const attackSpeedPercent = currentStats['Attack Speed'] || 100;
+        
+        // Weapon Power affects total damage
+        const weaponPowerModifier = (weaponPowerPercent - 100) / 100;
+        const damageModifier = totalDamage * weaponPowerModifier;
+        
+        // Attack Speed affects how quickly the damage is dealt (reducing duration)
+        const attackSpeedModifier = (attackSpeedPercent - 100) / 100;
+        const durationModifier = -(duration * attackSpeedModifier);
+        
+        // Calculate new values
+        const newTotalDamage = totalDamage + damageModifier;
+        const newDuration = Math.max(0.1, duration + durationModifier);
+        const newDps = newTotalDamage / newDuration;
+        
+        modifiedValue = {
+            total: newTotalDamage,
+            duration: newDuration,
+            dps: newDps
+        };
+        
+        modifier = {
+            total: damageModifier,
+            duration: durationModifier,
+            dps: newDps - baseValue.dps
+        };
+        
+        // Track both modifiers
+        modifierType = {
+            damage: "Weapon Power",
+            duration: "Attack Speed"
+        };
+    }
+}
+            // 2. Range-based stats (e.g. "95-190 per second")
+            else if (stat.value.includes("-") && !stat.value.includes("seconds")) {
+                const rangeMatch = /(\d+(\.\d+)?)-(\d+(\.\d+)?)/.exec(stat.value);
+                
+                if (rangeMatch) {
+                    const minValue = parseFloat(rangeMatch[1]);
+                    const maxValue = parseFloat(rangeMatch[3]);
+                    
+                    displayFormat = "range";
+                    baseValue = { min: minValue, max: maxValue };
+                    
+                    // Determine appropriate modifier
+                    if (stat.label.includes("Damage")) {
+                        modifierType = "Weapon Power";
+                        const weaponPowerPercent = currentStats['Weapon Power'] || 100;
+                        const weaponPowerModifier = (weaponPowerPercent - 100) / 100;
+                        
+                        modifier = {
+                            min: minValue * weaponPowerModifier,
+                            max: maxValue * weaponPowerModifier
+                        };
+                        
+                        modifiedValue = {
+                            min: minValue + modifier.min,
+                            max: maxValue + modifier.max
+                        };
+                    }
+                }
+            }
+            // 3. Fire rate stats
+            else if ((stat.label.includes("Fire Rate") || stat.label.includes("Rate of Fire")) && 
+                     (stat.value.includes("per second") || stat.value.includes("rounds per second") || 
+                      stat.value.includes("shots per second"))) {
+                
+                let rateMatch = /(\d+(\.\d+)?)\s*(shots|rounds)?\s*per second/.exec(stat.value);
+                
+                if (!rateMatch) {
+                    // Try alternate format like "1 swing per 0.9 seconds"
+                    rateMatch = /(\d+(\.\d+)?)\s*(?:swing|shot)s?\s*per\s*(\d+(\.\d+)?)\s*seconds/.exec(stat.value);
+                    
+                    if (rateMatch) {
+                        const count = parseFloat(rateMatch[1]);
+                        const time = parseFloat(rateMatch[3]);
+                        baseValue = count / time; // Convert to per second
+                    } 
+                } else {
+                    baseValue = parseFloat(rateMatch[1]);
+                }
+                
+                if (baseValue !== null) {
+                    modifierType = "Attack Speed";
+                    const attackSpeedPercent = currentStats['Attack Speed'] || 100;
+                    const attackSpeedModifier = (attackSpeedPercent - 100) / 100;
+                    
+                    modifier = baseValue * attackSpeedModifier;
+                    modifiedValue = baseValue + modifier;
+                    displayFormat = "rate";
+                }
+            }
+            // 4. Cooldown stats
+            else if (stat.label.includes("Cooldown")) {
+                const cdMatch = /(\d+(\.\d+)?)\s*seconds?/.exec(stat.value);
+                
+                if (cdMatch) {
+                    baseValue = parseFloat(cdMatch[1]);
+                    
+                    modifierType = "Cooldown Reduction";
+                    const cooldownPercent = currentStats['Cooldown Reduction'] || 0;
+                    const cooldownModifier = cooldownPercent / 100;
+                    
+                    modifier = -(baseValue * cooldownModifier); // Negative for reduction
+                    modifiedValue = baseValue + modifier;
+                    displayFormat = "cooldown";
+                }
+            }
+            // 5. Duration stats
+            else if (stat.label.includes("Duration") && !stat.label.includes("Stun") && 
+                     !stat.label.includes("Sleep") && stat.value.includes("seconds")) {
+                
+                const durationMatch = /(\d+(\.\d+)?)\s*seconds?/.exec(stat.value);
+                
+                if (durationMatch) {
+                    baseValue = parseFloat(durationMatch[1]);
+                    
+                    // Ability durations scale with Ability Power
                     modifierType = "Ability Power";
-                    // Apply ability power modifier
                     const abilityPowerPercent = currentStats['Ability Power'] || 100;
                     const abilityPowerModifier = (abilityPowerPercent - 100) / 100;
+                    
                     modifier = baseValue * abilityPowerModifier;
                     modifiedValue = baseValue + modifier;
-                    
-                    // Track item contributions
-                    selectedItems.forEach(item => {
-                        if (statModifiers[item.id] && statModifiers[item.id]['Ability Power']) {
-                            const contribution = baseValue * (statModifiers[item.id]['Ability Power'] / 100);
-                            contributors.push({
-                                name: item.name,
-                                value: statModifiers[item.id]['Ability Power'],
-                                contribution: contribution
-                            });
-                        }
-                    });
+                    displayFormat = "duration";
                 }
-                else if (stat.label.includes("Cooldown")) {
-                    modifierType = "Cooldown Reduction";
-                    // Apply cooldown reduction modifier
-                    const cooldownReductionPercent = currentStats['Cooldown Reduction'] || 0;
-                    modifier = -(baseValue * (cooldownReductionPercent / 100));
+            }
+            // 6. Healing over time
+            else if (stat.label.includes("Healing") && stat.value.includes("over")) {
+                const healMatch = /(\d+(\.\d+)?)\s*over/.exec(stat.value);
+                
+                if (healMatch) {
+                    baseValue = parseFloat(healMatch[1]);
+                    
+                    modifierType = "Ability Power";
+                    const abilityPowerPercent = currentStats['Ability Power'] || 100;
+                    const abilityPowerModifier = (abilityPowerPercent - 100) / 100;
+                    
+                    modifier = baseValue * abilityPowerModifier;
                     modifiedValue = baseValue + modifier;
+                    displayFormat = "healing";
+                }
+            }
+            // 7. Direct + splash damage format
+            else if (stat.value.includes("direct") && stat.value.includes("splash")) {
+                const directMatch = /(\d+(\.\d+)?)\s*direct/.exec(stat.value);
+                const splashMatch = /(\d+(\.\d+)?)\s*splash/.exec(stat.value);
+                
+                if (directMatch && splashMatch) {
+                    const directDamage = parseFloat(directMatch[1]);
+                    const splashDamage = parseFloat(splashMatch[1]);
                     
-                    // Track item contributions
-                    selectedItems.forEach(item => {
-                        if (statModifiers[item.id] && statModifiers[item.id]['Cooldown Reduction']) {
-                            const contribution = -(baseValue * (statModifiers[item.id]['Cooldown Reduction'] / 100));
+                    baseValue = { direct: directDamage, splash: splashDamage };
+                    displayFormat = "directSplash";
+                    
+                    modifierType = "Weapon Power";
+                    const weaponPowerPercent = currentStats['Weapon Power'] || 100;
+                    const weaponPowerModifier = (weaponPowerPercent - 100) / 100;
+                    
+                    modifier = {
+                        direct: directDamage * weaponPowerModifier,
+                        splash: splashDamage * weaponPowerModifier
+                    };
+                    
+                    modifiedValue = {
+                        direct: directDamage + modifier.direct,
+                        splash: splashDamage + modifier.splash
+                    };
+                }
+            }
+            // 8. Damage per second
+            else if (stat.value.includes("per second") && (stat.label.includes("Damage") || stat.label.includes("DPS"))) {
+                const dpsMatch = /(\d+(\.\d+)?)\s*per second/.exec(stat.value);
+                
+                if (dpsMatch) {
+                    baseValue = parseFloat(dpsMatch[1]);
+                    
+                    modifierType = "Weapon Power";
+                    const weaponPowerPercent = currentStats['Weapon Power'] || 100;
+                    const weaponPowerModifier = (weaponPowerPercent - 100) / 100;
+                    
+                    modifier = baseValue * weaponPowerModifier;
+                    modifiedValue = baseValue + modifier;
+                    displayFormat = "dps";
+                }
+            }
+            // 9. Healing per second
+            else if (stat.value.includes("per second") && stat.label.includes("Healing")) {
+                const hpsMatch = /(\d+(\.\d+)?)\s*per second/.exec(stat.value);
+                
+                if (hpsMatch) {
+                    baseValue = parseFloat(hpsMatch[1]);
+                    
+                    modifierType = "Ability Power";
+                    const abilityPowerPercent = currentStats['Ability Power'] || 100;
+                    const abilityPowerModifier = (abilityPowerPercent - 100) / 100;
+                    
+                    modifier = baseValue * abilityPowerModifier;
+                    modifiedValue = baseValue + modifier;
+                    displayFormat = "hps";
+                }
+            }
+            // 10. Percentage-based stats (e.g. "+50%")
+            else if (stat.value.includes("%")) {
+                const percentMatch = /\+?(\d+(\.\d+)?)%/.exec(stat.value);
+                
+                if (percentMatch) {
+                    baseValue = parseFloat(percentMatch[1]);
+                    displayFormat = "percentage";
+                    
+                    // Determine which modifier applies
+                    if (stat.label.includes("Healing") || (stat.value.includes("Healing") && stat.value.includes("Boost"))) {
+                        modifierType = "Ability Power";
+                        const abilityPowerPercent = currentStats['Ability Power'] || 100;
+                        const abilityPowerModifier = (abilityPowerPercent - 100) / 100;
+                        
+                        modifier = baseValue * abilityPowerModifier;
+                        modifiedValue = baseValue + modifier;
+                    }
+                    else if (stat.label.includes("Damage")) {
+                        modifierType = "Weapon Power";
+                        const weaponPowerPercent = currentStats['Weapon Power'] || 100;
+                        const weaponPowerModifier = (weaponPowerPercent - 100) / 100;
+                        
+                        modifier = baseValue * weaponPowerModifier;
+                        modifiedValue = baseValue + modifier;
+                    }
+                    else if (stat.label.includes("Speed")) {
+                        modifierType = "Move Speed";
+                        const moveSpeedPercent = currentStats['Move Speed'] || 100;
+                        const moveSpeedModifier = (moveSpeedPercent - 100) / 100;
+                        
+                        modifier = baseValue * moveSpeedModifier;
+                        modifiedValue = baseValue + modifier;
+                    }
+                    else {
+                        // If we can't determine a specific type, don't modify
+                        modifiedValue = baseValue;
+                        modifier = 0;
+                    }
+                }
+            }
+            // 11. Simple damage values (e.g. "120")
+            else if (stat.label.includes("Damage") && !stat.label.includes("Reduction")) {
+                const damageMatch = /^(\d+(\.\d+)?)/.exec(stat.value);
+                
+                if (damageMatch) {
+                    baseValue = parseFloat(damageMatch[1]);
+                    
+                    modifierType = "Weapon Power";
+                    const weaponPowerPercent = currentStats['Weapon Power'] || 100;
+                    const weaponPowerModifier = (weaponPowerPercent - 100) / 100;
+                    
+                    modifier = baseValue * weaponPowerModifier;
+                    modifiedValue = baseValue + modifier;
+                    displayFormat = "damage";
+                }
+            }
+            // 12. Simple healing values (e.g. "70")
+            else if (stat.label.includes("Healing")) {
+                const healingMatch = /^(\d+(\.\d+)?)/.exec(stat.value);
+                
+                if (healingMatch) {
+                    baseValue = parseFloat(healingMatch[1]);
+                    
+                    modifierType = "Ability Power";
+                    const abilityPowerPercent = currentStats['Ability Power'] || 100;
+                    const abilityPowerModifier = (abilityPowerPercent - 100) / 100;
+                    
+                    modifier = baseValue * abilityPowerModifier;
+                    modifiedValue = baseValue + modifier;
+                    displayFormat = "healing";
+                }
+            }
+            // 13. Radius/Range values - these don't generally scale with stats
+            else if (stat.label.includes("Radius") || stat.label.includes("Range") || stat.label.includes("Width")) {
+                const radiusMatch = /(\d+(\.\d+)?)\s*meters?/.exec(stat.value);
+                
+                if (radiusMatch) {
+                    baseValue = parseFloat(radiusMatch[1]);
+                    modifiedValue = baseValue; // No modification by default
+                    displayFormat = "radius";
+                }
+            }
+            // 14. Simple numeric values at the start that don't match other patterns
+            else {
+                const numericMatch = /^(\d+(\.\d+)?)/.exec(stat.value);
+                if (numericMatch) {
+                    baseValue = parseFloat(numericMatch[1]);
+                    modifiedValue = baseValue; // No modification by default
+                    displayFormat = "numeric";
+                }
+            }
+            
+            // If we have a modifier type, track contributions from items
+            if (modifierType && selectedItems && selectedItems.length > 0) {
+                selectedItems.forEach(item => {
+                    if (statModifiers[item.id] && statModifiers[item.id][modifierType]) {
+                        const itemValue = statModifiers[item.id][modifierType];
+                        
+                        // Different contribution calculation based on format
+                        let contribution = null;
+                        
+                        if (displayFormat === "pellet" && baseValue && typeof baseValue.pellet === 'number') {
+                            const pelletContribution = baseValue.pellet * (itemValue / 100);
+                            const totalContribution = baseValue.total * (itemValue / 100);
+                            contribution = { pellet: pelletContribution, total: totalContribution };
+                        }
+                        else if (displayFormat === "range" && baseValue && typeof baseValue.min === 'number') {
+                            const minContribution = baseValue.min * (itemValue / 100);
+                            const maxContribution = baseValue.max * (itemValue / 100);
+                            contribution = { min: minContribution, max: maxContribution };
+                        }
+                        else if (displayFormat === "directSplash" && baseValue && typeof baseValue.direct === 'number') {
+                            const directContribution = baseValue.direct * (itemValue / 100);
+                            const splashContribution = baseValue.splash * (itemValue / 100);
+                            contribution = { direct: directContribution, splash: splashContribution };
+                        }
+                        else if (displayFormat === "cooldown" && typeof baseValue === 'number') {
+                            // Negative for cooldown reduction
+                            contribution = -(baseValue * (itemValue / 100));
+                        }
+                        // Add this to the contributors section in calculateModifiedAbilityStats
+
+else if (displayFormat === "dot") {
+    // Track contributions for both Weapon Power and Attack Speed
+    if (modifierType.damage === stat.modifierType || modifierType.duration === stat.modifierType) {
+        // Get base values
+        const totalDamage = baseValue.total;
+        const duration = baseValue.duration;
+        
+        if (modifierType === "Weapon Power") {
+            // Weapon Power affects total damage
+            const damageContribution = totalDamage * (itemValue / 100);
+            
+            contributors.push({
+                name: item.name,
+                value: itemValue,
+                aspect: "damage",
+                contribution: damageContribution
+            });
+        }
+        else if (modifierType === "Attack Speed") {
+            // Attack Speed affects duration
+            const durationContribution = -(duration * (itemValue / 100));
+            
+            contributors.push({
+                name: item.name,
+                value: itemValue,
+                aspect: "duration",
+                contribution: durationContribution
+            });
+        }
+    }
+}
+                        else if (typeof baseValue === 'number') {
+                            // Simple contribution
+                            contribution = baseValue * (itemValue / 100);
+                        }
+                        
+                        if (contribution !== null) {
                             contributors.push({
                                 name: item.name,
-                                value: statModifiers[item.id]['Cooldown Reduction'],
+                                value: itemValue,
                                 contribution: contribution
                             });
                         }
-                    });
-                }
+                    }
+                });
             }
             
             // Add the stat to our results
@@ -675,7 +1371,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayValue: stat.value, // Original display string
                 modifier: modifier,
                 modifierType: modifierType,
-                contributors: contributors
+                contributors: contributors,
+                displayFormat: displayFormat
             });
         });
         
@@ -688,9 +1385,33 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Generate HTML for each stat
         let statsHTML = '';
+        
+        // Track values for DPS calculation
+        let damagePerShot = null;
+        let fireRate = null;
+        
         modifiedStats.forEach(stat => {
-            // Skip stats that don't have numeric values or modifications
-            if (stat.baseValue === null || stat.modifiedValue === null) {
+            // Track values for DPS calculation
+            if (stat.label.includes("Damage") && !stat.label.includes("per second") && 
+                !stat.label.includes("Reduction")) {
+                
+                if (stat.displayFormat === "pellet" && stat.modifiedValue && typeof stat.modifiedValue.total === 'number') {
+                    damagePerShot = stat.modifiedValue.total;
+                } else if (typeof stat.modifiedValue === 'number') {
+                    damagePerShot = stat.modifiedValue;
+                }
+            }
+            
+            if (stat.label.includes("Fire Rate") || (stat.label.includes("Rate") && 
+                stat.value.includes("per second"))) {
+                
+                if (typeof stat.modifiedValue === 'number') {
+                    fireRate = stat.modifiedValue;
+                }
+            }
+            
+            // Skip stats that don't have parseable values
+            if (stat.baseValue === null) {
                 statsHTML += `
                     <div class="ability-stat">
                         <label>${stat.label}:</label>
@@ -708,42 +1429,235 @@ document.addEventListener('DOMContentLoaded', () => {
                 valueClass = 'stat-healing';
             } else if (stat.label.includes("Cooldown")) {
                 valueClass = 'stat-cooldown';
+            } else if (stat.label.includes("Duration")) {
+                valueClass = 'stat-ability';
             }
             
-            // Format the modifier with sign and precision
-            const formattedModifier = stat.modifier.toFixed(1);
-            const modifierSign = stat.modifier >= 0 ? '+' : '';
+            // Format the display text based on stat type
+            let displayText = '';
+            let hasModification = false;
+            let modifierHTML = '';
             
-            // Only show modification if there is one
-            if (Math.abs(stat.modifier) > 0.01) {
-                // Create HTML for contributors
-                let contributorsHTML = '';
-                if (stat.contributors.length > 0) {
-                    contributorsHTML = `
-                        <div class="stat-contributors">
-                            <div class="contributors-title">Contributions from:</div>
-                            ${stat.contributors.map(contributor => `
+            try {
+                // Different handling based on display format
+                if (stat.displayFormat === "pellet" && stat.modifiedValue && typeof stat.modifiedValue.pellet === 'number') {
+                    displayText = `${stat.modifiedValue.pellet.toFixed(1)} per pellet, ${stat.modifiedValue.count} pellets`;
+                    
+                    if (typeof stat.modifiedValue.total === 'number') {
+                        displayText += ` (${stat.modifiedValue.total.toFixed(1)} total)`;
+                    }
+                    
+                    if (stat.modifier && typeof stat.modifier.pellet === 'number' && Math.abs(stat.modifier.pellet) > 0.01) {
+                        hasModification = true;
+                        modifierHTML = `
+                            <span class="modifier ${stat.modifier.pellet >= 0 ? 'positive' : 'negative'}">
+                                (${stat.modifier.pellet > 0 ? '+' : ''}${stat.modifier.pellet.toFixed(1)} per pellet)
+                            </span>`;
+                    }
+                }
+                else if (stat.displayFormat === "dot" && stat.modifiedValue && 
+                    typeof stat.modifiedValue.total === 'number' && 
+                    typeof stat.modifiedValue.duration === 'number') {
+               
+               displayText = `${stat.modifiedValue.total.toFixed(1)} damage over ${stat.modifiedValue.duration.toFixed(1)}s (${stat.modifiedValue.dps.toFixed(1)} DPS)`;
+               
+               // Check for significant modifications
+               if ((typeof stat.modifier.total === 'number' && Math.abs(stat.modifier.total) > 0.01) || 
+                   (typeof stat.modifier.duration === 'number' && Math.abs(stat.modifier.duration) > 0.01)) {
+                   
+                   hasModification = true;
+                   modifierHTML = `
+                       <span class="modifier ${stat.modifier.total >= 0 ? 'positive' : 'negative'}">
+                           (${stat.modifier.total > 0 ? '+' : ''}${stat.modifier.total.toFixed(1)} damage, 
+                           ${stat.modifier.duration > 0 ? '+' : ''}${stat.modifier.duration.toFixed(1)}s duration)
+                       </span>`;
+               }
+               
+               // Create formula explanation
+               formulaHTML = `
+                   Base damage: ${stat.baseValue.total.toFixed(1)} × ${stat.modifierType.damage} (${currentStats[stat.modifierType.damage]}%) = ${stat.modifiedValue.total.toFixed(1)}<br>
+                   Base duration: ${stat.baseValue.duration.toFixed(1)}s affected by ${stat.modifierType.duration} (${currentStats[stat.modifierType.duration]}%) = ${stat.modifiedValue.duration.toFixed(1)}s<br>
+                   New DPS: ${stat.modifiedValue.dps.toFixed(1)} (${stat.modifier.dps > 0 ? '+' : ''}${stat.modifier.dps.toFixed(1)} DPS change)
+               `;
+           }
+                else if (stat.displayFormat === "range" && stat.modifiedValue && 
+                         typeof stat.modifiedValue.min === 'number' && typeof stat.modifiedValue.max === 'number') {
+                    
+                    displayText = `${stat.modifiedValue.min.toFixed(1)}-${stat.modifiedValue.max.toFixed(1)}`;
+                    
+                    // Add the rest of the original text after the range
+                    const originalSuffix = stat.displayValue.split('-')[1].trim();
+                    if (originalSuffix) {
+                        const suffixStart = originalSuffix.indexOf(' ');
+                        if (suffixStart > 0) {
+                            displayText += ` ${originalSuffix.substring(suffixStart)}`;
+                        }
+                    }
+                    
+                    if (stat.modifier && typeof stat.modifier.min === 'number' && 
+                        (Math.abs(stat.modifier.min) > 0.01 || Math.abs(stat.modifier.max) > 0.01)) {
+                        
+                        hasModification = true;
+                        modifierHTML = `
+                            <span class="modifier ${stat.modifier.min >= 0 ? 'positive' : 'negative'}">
+                                (${stat.modifier.min > 0 ? '+' : ''}${stat.modifier.min.toFixed(1)} to ${stat.modifier.max > 0 ? '+' : ''}${stat.modifier.max.toFixed(1)})
+                            </span>`;
+                    }
+                }
+                else if (stat.displayFormat === "directSplash" && stat.modifiedValue && 
+                         typeof stat.modifiedValue.direct === 'number' && typeof stat.modifiedValue.splash === 'number') {
+                    
+                    displayText = `${stat.modifiedValue.direct.toFixed(1)} direct, ${stat.modifiedValue.splash.toFixed(1)} splash`;
+                    
+                    if (stat.modifier && typeof stat.modifier.direct === 'number' && 
+                        (Math.abs(stat.modifier.direct) > 0.01 || Math.abs(stat.modifier.splash) > 0.01)) {
+                        
+                        hasModification = true;
+                        modifierHTML = `
+                            <span class="modifier ${stat.modifier.direct >= 0 ? 'positive' : 'negative'}">
+                                (${stat.modifier.direct > 0 ? '+' : ''}${stat.modifier.direct.toFixed(1)} direct, ${stat.modifier.splash > 0 ? '+' : ''}${stat.modifier.splash.toFixed(1)} splash)
+                            </span>`;
+                    }
+                }
+                else if (typeof stat.modifiedValue === 'number' && typeof stat.baseValue === 'number') {
+                    // Handle simple numeric values
+                    // Create a modified display by replacing the original number
+                    const originalText = stat.displayValue;
+                    displayText = originalText.replace(/\d+(\.\d+)?/, stat.modifiedValue.toFixed(1));
+                    
+                    // Add modifier display if there is a significant change
+                    if (typeof stat.modifier === 'number' && Math.abs(stat.modifier) > 0.01) {
+                        hasModification = true;
+                        modifierHTML = `
+                            <span class="modifier ${stat.modifier >= 0 ? 'positive' : 'negative'}">
+                                (${stat.modifier > 0 ? '+' : ''}${stat.modifier.toFixed(1)})
+                            </span>`;
+                    }
+                }
+                else {
+                    // Fallback to original display
+                    displayText = stat.displayValue;
+                }
+            } catch (error) {
+                // If any error occurs during formatting, just use the original value
+                console.error(`Error formatting stat: ${stat.label}`, error);
+                displayText = stat.displayValue;
+            }
+            
+            // Create contributors HTML if we have any
+            let contributorsHTML = '';
+            if (hasModification && stat.contributors && stat.contributors.length > 0) {
+                contributorsHTML = `
+                    <div class="stat-contributors">
+                        <div class="contributors-title">Contributions from:</div>
+                `;
+                
+                stat.contributors.forEach(contributor => {
+                    try {
+                        // Different formatting based on contribution type
+                        if (stat.displayFormat === "pellet" && typeof contributor.contribution === 'object') {
+                            contributorsHTML += `
+                                <div class="contributor">
+                                    <span class="contributor-name">${contributor.name}:</span>
+                                    <span class="contributor-value">${contributor.value > 0 ? '+' : ''}${contributor.value}%</span>
+                                    <span class="contributor-result">(${contributor.contribution.pellet > 0 ? '+' : ''}${contributor.contribution.pellet.toFixed(1)} per pellet)</span>
+                                </div>
+                            `;
+                        }
+                        else if (stat.displayFormat === "range" && typeof contributor.contribution === 'object') {
+                            contributorsHTML += `
+                                <div class="contributor">
+                                    <span class="contributor-name">${contributor.name}:</span>
+                                    <span class="contributor-value">${contributor.value > 0 ? '+' : ''}${contributor.value}%</span>
+                                    <span class="contributor-result">(${contributor.contribution.min > 0 ? '+' : ''}${contributor.contribution.min.toFixed(1)} to ${contributor.contribution.max > 0 ? '+' : ''}${contributor.contribution.max.toFixed(1)})</span>
+                                </div>
+                            `;
+                        }
+                        else if (stat.displayFormat === "directSplash" && typeof contributor.contribution === 'object') {
+                            contributorsHTML += `
+                                <div class="contributor">
+                                    <span class="contributor-name">${contributor.name}:</span>
+                                    <span class="contributor-value">${contributor.value > 0 ? '+' : ''}${contributor.value}%</span>
+                                    <span class="contributor-result">(${contributor.contribution.direct > 0 ? '+' : ''}${contributor.contribution.direct.toFixed(1)} direct, ${contributor.contribution.splash > 0 ? '+' : ''}${contributor.contribution.splash.toFixed(1)} splash)</span>
+                                </div>
+                            `;
+                        }
+                        // Add this case to the contributorsHTML generation in generateModifiedAbilityHTML
+
+else if (stat.displayFormat === "dot") {
+    // Show different contributions based on aspect
+    if (contributor.aspect === "damage") {
+        contributorsHTML += `
+            <div class="contributor">
+                <span class="contributor-name">${contributor.name}:</span>
+                <span class="contributor-value">${contributor.value > 0 ? '+' : ''}${contributor.value}% ${contributor.aspect}</span>
+                <span class="contributor-result">(${contributor.contribution > 0 ? '+' : ''}${contributor.contribution.toFixed(1)} damage)</span>
+            </div>
+        `;
+    } else {
+        contributorsHTML += `
+            <div class="contributor">
+                <span class="contributor-name">${contributor.name}:</span>
+                <span class="contributor-value">${contributor.value > 0 ? '+' : ''}${contributor.value}% ${contributor.aspect}</span>
+                <span class="contributor-result">(${contributor.contribution > 0 ? '+' : ''}${contributor.contribution.toFixed(1)}s duration)</span>
+            </div>
+        `;
+    }
+}
+                        else if (typeof contributor.contribution === 'number') {
+                            contributorsHTML += `
                                 <div class="contributor">
                                     <span class="contributor-name">${contributor.name}:</span>
                                     <span class="contributor-value">${contributor.value > 0 ? '+' : ''}${contributor.value}%</span>
                                     <span class="contributor-result">(${contributor.contribution > 0 ? '+' : ''}${contributor.contribution.toFixed(1)})</span>
                                 </div>
-                            `).join('')}
-                        </div>
-                    `;
-                }
+                            `;
+                        }
+                    } catch (error) {
+                        // Skip this contributor if there's an error
+                        console.error(`Error formatting contributor: ${contributor.name}`, error);
+                    }
+                });
                 
+                contributorsHTML += `</div>`;
+            }
+            
+            // Create formula explanation
+            let formulaHTML = '';
+            try {
+                if (hasModification) {
+                    if (stat.displayFormat === "pellet" && stat.baseValue && typeof stat.baseValue.pellet === 'number') {
+                        formulaHTML = `Base damage per pellet (${stat.baseValue.pellet.toFixed(1)}) × ${stat.modifierType} modifier (${(currentStats[stat.modifierType] / 100).toFixed(2)}) = ${stat.modifiedValue.pellet.toFixed(1)} per pellet`;
+                    }
+                    else if (stat.displayFormat === "range" && stat.baseValue && typeof stat.baseValue.min === 'number') {
+                        formulaHTML = `Base range (${stat.baseValue.min.toFixed(1)}-${stat.baseValue.max.toFixed(1)}) × ${stat.modifierType} modifier (${(currentStats[stat.modifierType] / 100).toFixed(2)})`;
+                    }
+                    else if (stat.displayFormat === "directSplash" && stat.baseValue && typeof stat.baseValue.direct === 'number') {
+                        formulaHTML = `Base (${stat.baseValue.direct.toFixed(1)} direct, ${stat.baseValue.splash.toFixed(1)} splash) × ${stat.modifierType} modifier (${(currentStats[stat.modifierType] / 100).toFixed(2)})`;
+                    }
+                    else if (stat.displayFormat === "cooldown" && typeof stat.baseValue === 'number') {
+                        formulaHTML = `Base cooldown (${stat.baseValue.toFixed(1)}s) × (1 - ${stat.modifierType} (${currentStats[stat.modifierType]}%)) = ${stat.modifiedValue.toFixed(1)}s`;
+                    }
+                    else if (typeof stat.baseValue === 'number') {
+                        formulaHTML = `Base value (${stat.baseValue.toFixed(1)}) × ${stat.modifierType} modifier (${(currentStats[stat.modifierType] / 100).toFixed(2)}) = ${stat.modifiedValue.toFixed(1)}`;
+                    }
+                }
+            } catch (error) {
+                console.error(`Error generating formula for stat: ${stat.label}`, error);
+                formulaHTML = `Modified by ${stat.modifierType} (${currentStats[stat.modifierType]}%)`;
+            }
+            
+            // Generate the final HTML
+            if (hasModification) {
                 statsHTML += `
                     <div class="ability-stat expandable">
                         <label>${stat.label}:</label>
                         <div class="stat-value-container">
-                            <span class="base-value ${valueClass}">${stat.baseValue}</span>
-                            <span class="modifier ${stat.modifier >= 0 ? 'positive' : 'negative'}">${modifierSign}${formattedModifier}</span>
-                            <span class="equals">=</span>
-                            <span class="final-value ${valueClass}">${stat.modifiedValue.toFixed(1)}</span>
+                            <span class="base-value ${valueClass}">${displayText}</span>
+                            ${modifierHTML}
                             <button class="expand-btn" title="Show details">↓</button>
                             <div class="stat-details">
-                                <div class="stat-formula">Base + ${stat.modifierType} (${currentStats[stat.modifierType] - 100}%)</div>
+                                <div class="stat-formula">${formulaHTML}</div>
                                 ${contributorsHTML}
                             </div>
                         </div>
@@ -754,14 +1668,85 @@ document.addEventListener('DOMContentLoaded', () => {
                 statsHTML += `
                     <div class="ability-stat">
                         <label>${stat.label}:</label>
-                        <span class="${valueClass}">${stat.displayValue}</span>
+                        <span class="${valueClass}">${displayText}</span>
                     </div>
                 `;
             }
         });
         
+        // Add DPS calculation if we have both damage and fire rate
+        if (damagePerShot !== null && fireRate !== null) {
+            const dps = damagePerShot * fireRate;
+            statsHTML += `
+                <div class="ability-stat dps-calculation">
+                    <label>Effective DPS:</label>
+                    <span class="stat-damage">${dps.toFixed(1)}</span>
+                    <span class="dps-formula">(${damagePerShot.toFixed(1)} damage × ${fireRate.toFixed(2)} shots/sec)</span>
+                </div>
+            `;
+        }
+        
         return statsHTML;
     }
+    // Find the function that handles ability carousel rendering
+function updatePersistentAbilityStats() {
+    const abilityCarousel = document.getElementById('ability-carousel');
+    if (!abilityCarousel || !selectedHero) return;
+    
+    abilityCarousel.innerHTML = '';
+    
+    // Get hero abilities
+    const hero = heroes[selectedHero];
+    
+    // Loop through abilities and create slides
+    hero.abilities.forEach((ability, index) => {
+        // Create slide
+        const slide = document.createElement('div');
+        slide.className = `ability-slide ${index === 0 ? 'active' : ''}`;
+        slide.setAttribute('data-index', index);
+        
+        // Get ability icon
+        const abilityIconPath = getAbilityIconPath(hero.name, ability.name);
+        
+        // Generate enhanced stats HTML using our improved function
+        const statsHTML = generateModifiedAbilityHTML(ability, currentHeroStats, heroBaseStats[selectedHero]);
+        
+        // Create slide content
+        slide.innerHTML = `
+            <div class="ability-header">
+                <div class="ability-icon">
+                    <img src="${abilityIconPath}" alt="${ability.name}" 
+                        onerror="this.parentNode.innerHTML='${ability.name.charAt(0)}'"/>
+                </div>
+                <div class="ability-name">${ability.name}</div>
+            </div>
+            <div class="ability-description">${ability.description}</div>
+            <div class="ability-stats">
+                ${statsHTML}
+            </div>
+        `;
+        
+        abilityCarousel.appendChild(slide);
+        
+        // Also update indicator dots
+        const indicator = document.getElementById('ability-indicator');
+        if (indicator) {
+            indicator.innerHTML = '';
+            
+            for (let i = 0; i < hero.abilities.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = `indicator-dot ${i === 0 ? 'active' : ''}`;
+                dot.setAttribute('data-index', i);
+                dot.addEventListener('click', () => showAbilitySlide(i));
+                indicator.appendChild(dot);
+            }
+        }
+    });
+    
+    // Setup expandable stat details
+    setupExpandableStats();
+    initAbilityCarousel();
+}
     
     // Function to update the Overview page 
     function updateOverviewPage() {
@@ -846,7 +1831,7 @@ document.addEventListener('DOMContentLoaded', () => {
         overviewPage.innerHTML = overviewHTML;
         
         // Update the stats display
-        updateStatsDisplay();
+        updateAllStats();
         
         // Set up expandable stats
         setupExpandableStats();
@@ -855,16 +1840,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to add event listeners to expandable stats
     function setupExpandableStats() {
         document.querySelectorAll('.ability-stat.expandable').forEach(statElement => {
-            statElement.addEventListener('click', function() {
-                this.classList.toggle('expanded');
-                
-                // Close other expanded stats
-                document.querySelectorAll('.ability-stat.expanded').forEach(stat => {
-                    if (stat !== this) {
-                        stat.classList.remove('expanded');
-                    }
+            if (statElement.querySelector('.expand-btn')) {
+                statElement.querySelector('.expand-btn').addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent the stat element click from triggering
+                    statElement.classList.toggle('expanded');
+                    
+                    // Close other expanded stats
+                    document.querySelectorAll('.ability-stat.expanded').forEach(stat => {
+                        if (stat !== statElement) {
+                            stat.classList.remove('expanded');
+                        }
+                    });
                 });
-            });
+            }
         });
     }
     
@@ -984,6 +1972,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Display hero details
     function displayHeroDetails(heroId) {
+        // Ensure the persistent build summary exists before proceeding
+        ensurePersistentBuildSummary();
         selectedHero = heroId;
         selectedPowers = [];
         selectedItems = [];
@@ -1063,15 +2053,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         universalItemsPage.innerHTML = universalItemsHTML;
-        
-        // Generate Overview Page (this will populate with combined hero details and abilities)
-        updateOverviewPage();
+        updatePersistentBuildSummary();
+        updatePersistentStats();
         
         // Setup event listeners for tabs, items and powers
         setupTabNavigation();
         setupSelectionListeners();
         
         // Initialize the stats display
+        updateAllStats();
         updateStatsDisplay();
         
         // Set up image error handlers
@@ -1079,6 +2069,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Setup build management functionality
         setupBuildManagement();
+        
+        // Initialize ability statistics
+        initAbilityCarousel();
+        updateAbilityStats();
         
         // Trigger an event to notify that a hero has been selected
         document.dispatchEvent(new CustomEvent('heroSelected', { detail: { heroId: heroId } }));
@@ -1153,6 +2147,149 @@ document.addEventListener('DOMContentLoaded', () => {
         // Share build button
         shareBtn.addEventListener('click', shareBuild);
     }
+    // Add to app.js - Enhanced ability statistics calculation
+function updatePersistentAbilityStats() {
+    const abilitiesList = document.getElementById('persistent-abilities-list');
+    if (!abilitiesList || !selectedHero) return;
+    
+    abilitiesList.innerHTML = '';
+    
+    // Get hero abilities
+    const hero = heroes[selectedHero];
+    
+    // Current stat modifiers
+    const weaponPowerMod = (currentHeroStats['Weapon Power'] || 100) / 100;
+    const abilityPowerMod = (currentHeroStats['Ability Power'] || 100) / 100;
+    const attackSpeedMod = (currentHeroStats['Attack Speed'] || 100) / 100;
+    const cooldownMod = 1 - ((currentHeroStats['Cooldown Reduction'] || 0) / 100);
+    
+    // Process each ability
+    hero.abilities.forEach(ability => {
+        const abilityEl = document.createElement('div');
+        abilityEl.className = 'persistent-ability-item';
+        
+        // Ability header with icon
+        const abilityIcon = getAbilityIconPath(hero.name, ability.name);
+        
+        let abilityHTML = `
+            <div class="persistent-ability-header">
+                <div class="persistent-ability-icon">
+                    <img src="${abilityIcon}" alt="${ability.name}" onerror="this.src='images/ability-placeholder.png'">
+                </div>
+                <div class="persistent-ability-name">${ability.name}</div>
+            </div>
+            <div class="persistent-ability-stats">
+        `;
+        
+        // Process ability stats
+        let damagePerShot = 0;
+        let attacksPerSecond = 0;
+        let cooldownTime = 0;
+        let hasDamageStats = false;
+        let hasAttackSpeedStats = false;
+        
+        ability.stats.forEach(stat => {
+            // Try to extract numeric values
+            const numMatch = stat.value.match(/(\d+(\.\d+)?)/);
+            
+            if (numMatch) {
+                const baseValue = parseFloat(numMatch[1]);
+                let modifiedValue = baseValue;
+                let modifier = 0;
+                let isModified = false;
+                
+                // Apply modifiers based on stat type
+                if (stat.label.includes('Damage')) {
+                    modifiedValue = baseValue * weaponPowerMod;
+                    modifier = modifiedValue - baseValue;
+                    isModified = Math.abs(modifier) > 0.01;
+                    
+                    // Track for DPS calculation
+                    if (stat.label.includes('per shot') || !stat.label.includes('per')) {
+                        damagePerShot = modifiedValue;
+                        hasDamageStats = true;
+                    }
+                } 
+                else if (stat.label.includes('Healing')) {
+                    modifiedValue = baseValue * abilityPowerMod;
+                    modifier = modifiedValue - baseValue;
+                    isModified = Math.abs(modifier) > 0.01;
+                } 
+                else if (stat.label.includes('Cooldown')) {
+                    modifiedValue = baseValue * cooldownMod;
+                    modifier = modifiedValue - baseValue;
+                    isModified = Math.abs(modifier) > 0.01;
+                    cooldownTime = modifiedValue;
+                }
+                else if (stat.label.includes('Fire Rate') || stat.label.includes('per second')) {
+                    modifiedValue = baseValue * attackSpeedMod;
+                    modifier = modifiedValue - baseValue;
+                    isModified = Math.abs(modifier) > 0.01;
+                    attacksPerSecond = modifiedValue;
+                    hasAttackSpeedStats = true;
+                }
+                
+                // Format values
+                const formattedBase = baseValue.toFixed(1).replace(/\.0$/, '');
+                const formattedMod = modifier.toFixed(1).replace(/\.0$/, '');
+                const formattedValue = modifiedValue.toFixed(1).replace(/\.0$/, '');
+                
+                // Create stat HTML
+                const statClass = isModified ? 'persistent-ability-stat modified' : 'persistent-ability-stat';
+                const modifierHTML = isModified ? 
+                    `<span class="stat-bonus ${modifier >= 0 ? 'positive' : 'negative'}">(${modifier >= 0 ? '+' : ''}${formattedMod})</span>` : '';
+                
+                abilityHTML += `
+                    <div class="${statClass}">
+                        <div class="ability-stat-label">${stat.label}</div>
+                        <div class="ability-stat-value">
+                            ${formattedValue} ${modifierHTML}
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Non-numeric stat
+                abilityHTML += `
+                    <div class="persistent-ability-stat">
+                        <div class="ability-stat-label">${stat.label}</div>
+                        <div class="ability-stat-value">${stat.value}</div>
+                    </div>
+                `;
+            }
+        });
+        
+        abilityHTML += `</div>`;
+        
+        // Add DPS calculation if we have both damage and attack speed
+        if (hasDamageStats && hasAttackSpeedStats) {
+            const dps = damagePerShot * attacksPerSecond;
+            abilityHTML += `
+                <div class="dps-calculation">
+                    <span class="dps-label">Effective DPS:</span>
+                    <span class="dps-value">${dps.toFixed(1)}</span>
+                    <div class="dps-formula">${damagePerShot.toFixed(1)} damage × ${attacksPerSecond.toFixed(2)} attacks/sec</div>
+                </div>
+            `;
+        }
+        // Add time-to-kill calculation for ultimate abilities
+        else if (ability.name.includes('Ultimate') && damagePerShot > 0) {
+            // Assuming 200 HP target for calculation
+            const targetHP = 200;
+            const timeToKill = targetHP / damagePerShot;
+            
+            abilityHTML += `
+                <div class="dps-calculation">
+                    <span class="dps-label">Time to Kill (200 HP):</span>
+                    <span class="dps-value">${timeToKill.toFixed(2)} seconds</span>
+                </div>
+            `;
+        }
+        
+        abilityEl.innerHTML = abilityHTML;
+        abilitiesList.appendChild(abilityEl);
+    });
+}
+
     
     // Update selection summary
     function updateSelectionSummary() {
@@ -1198,6 +2335,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     removePower(powerId);
                 });
             });
+            updatePersistentBuildSummary();
+            updatePersistentStats();
         }
         
         // Update selected items list with icons
@@ -1232,7 +2371,130 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Set up image error handlers for new images
         setupImageErrorHandlers();
+        updateStatsFromItems();
+    updateAbilityStats();
+    updatePersistentBuildSummary();
+    updatePersistentStats();
+    updatePersistentAbilityStats();
     }
+    function updatePersistentLists() {
+        const persistentPowersList = document.getElementById('persistent-powers-list');
+        const persistentItemsList = document.getElementById('persistent-items-list');
+        
+        if (persistentPowersList) {
+            if (selectedPowers.length === 0) {
+                persistentPowersList.innerHTML = '<div class="empty-selection">No powers selected</div>';
+            } else {
+                persistentPowersList.innerHTML = '';
+                selectedPowers.forEach(power => {
+                    const iconFileName = getPowerIconFileName(power.name);
+                    const powerElement = document.createElement('div');
+                    powerElement.className = 'persistent-power-item';
+                    powerElement.dataset.id = power.id;
+                    powerElement.innerHTML = `
+                        <div class="persistent-power-icon">
+                            <img src="images/icons/${iconFileName}" alt="${power.name}" onerror="handleImageError(this)" />
+                        </div>
+                        <span>${power.name}</span>
+                        <div class="persistent-remove" data-remove-power="${power.id}">×</div>
+                    `;
+                    persistentPowersList.appendChild(powerElement);
+                });
+                
+                // Add remove event listeners
+                document.querySelectorAll('[data-remove-power]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const powerId = btn.dataset.removePower;
+                        removePower(powerId);
+                    });
+                });
+            }
+        }
+        
+        if (persistentItemsList) {
+            if (selectedItems.length === 0) {
+                persistentItemsList.innerHTML = '<div class="empty-selection">No items selected</div>';
+            } else {
+                persistentItemsList.innerHTML = '';
+                selectedItems.forEach(item => {
+                    const iconFileName = getIconFileName(item.name);
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'persistent-item-item';
+                    itemElement.dataset.id = item.id;
+                    itemElement.innerHTML = `
+                        <div class="persistent-item-icon">
+                            <img src="images/icons/${iconFileName}" alt="${item.name}" onerror="handleImageError(this)" />
+                        </div>
+                        <span>${item.name}</span>
+                        <span class="persistent-item-cost">${item.cost}</span>
+                        <div class="persistent-remove" data-remove-item="${item.id}">×</div>
+                    `;
+                    persistentItemsList.appendChild(itemElement);
+                });
+                
+                // Add remove event listeners
+                document.querySelectorAll('[data-remove-item]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const itemId = btn.dataset.removeItem;
+                        removeItem(itemId);
+                    });
+                });
+            }
+        }
+    }
+    function getStatColorClass(statName) {
+        if (statName === 'Health') return 'stat-health';
+        if (statName === 'Armor') return 'stat-armor';
+        if (statName === 'Shield') return 'stat-shield';
+        if (statName === 'Weapon Power' || statName === 'Weapon Lifesteal') return 'stat-weapon';
+        if (statName === 'Ability Power' || statName === 'Ability Lifesteal') return 'stat-ability';
+        if (statName === 'Move Speed') return 'stat-survival';
+        if (statName === 'Cooldown Reduction') return 'stat-cooldown';
+        return '';
+    }    
+    // Fix the order of operations to ensure elements exist before updating
+function updatePersistentBuildSummary() {
+    if (!selectedHero) return;
+    
+    const hero = heroes[selectedHero];
+    
+    // Update hero info first
+    const persistentHeroName = document.getElementById('persistent-hero-name');
+    const persistentHeroRole = document.getElementById('persistent-hero-role');
+    const persistentHeroIcon = document.querySelector('.persistent-hero-icon');
+    
+    if (persistentHeroName) persistentHeroName.textContent = hero.name;
+    if (persistentHeroRole) {
+        persistentHeroRole.textContent = hero.role;
+        persistentHeroRole.className = `persistent-hero-role ${hero.role}`;
+    }
+    if (persistentHeroIcon) {
+        persistentHeroIcon.innerHTML = `<img src="${getHeroIconPath(hero.name)}" alt="${hero.name}" onerror="handleImageError(this)" />`;
+    }
+    
+    // Make sure the counts are updated
+    const persistentPowersCount = document.getElementById('persistent-powers-count');
+    const persistentItemsCount = document.getElementById('persistent-items-count');
+    const persistentTotalCost = document.getElementById('persistent-total-cost');
+    
+    if (persistentPowersCount) persistentPowersCount.textContent = selectedPowers.length;
+    if (persistentItemsCount) persistentItemsCount.textContent = selectedItems.length;
+    
+    // Calculate total cost
+    const totalCost = selectedItems.reduce((total, item) => total + item.cost, 0);
+    if (persistentTotalCost) persistentTotalCost.textContent = totalCost;
+    
+    // Update powers and items lists
+    updatePersistentLists();
+    
+    // Initialize the ability carousel only after ensuring the elements exist
+    setTimeout(() => {
+        initAbilityCarousel();
+        updateAllStats();
+    }, 50);
+}
     
     // Remove power
     function removePower(powerId) {
@@ -1246,7 +2508,263 @@ document.addEventListener('DOMContentLoaded', () => {
         
         updateSelectionSummary();
     }
+    // Update function to match the HTML element IDs
+// The updated persistent stats function that matches your HTML IDs
+function updatePersistentStats() {
+    if (!selectedHero) return;
     
+    const hero = heroes[selectedHero];
+    
+    // Update health value
+    const healthValue = currentHeroStats['Health'] || hero.health;
+    const healthElement = document.getElementById('persistent-health');
+    if (healthElement) {
+        healthElement.textContent = healthValue;
+    }
+    
+    // Update percentage-based stats with the correct IDs from your HTML
+    const statMappings = [
+        { stat: 'Weapon Power', valueId: 'weapon-power-value', baseValue: 100, maxValue: 200 },
+        { stat: 'Ability Power', valueId: 'ability-power-value', baseValue: 100, maxValue: 200 },
+        { stat: 'Attack Speed', valueId: 'attack-speed-value', baseValue: 100, maxValue: 200 },
+        { stat: 'Cooldown Reduction', valueId: 'cooldown-value', baseValue: 0, maxValue: 50 },
+        { stat: 'Max Ammo', valueId: 'max-ammo-value', baseValue: 100, maxValue: 200 },
+        { stat: 'Weapon Lifesteal', valueId: 'weapon-lifesteal-value', baseValue: 0, maxValue: 50 },
+        { stat: 'Ability Lifesteal', valueId: 'ability-lifesteal-value', baseValue: 0, maxValue: 50 },
+        { stat: 'Move Speed', valueId: 'move-speed-value', baseValue: 100, maxValue: 150 },
+        { stat: 'Reload Speed', valueId: 'reload-speed-value', baseValue: 0, maxValue: 50 },
+        { stat: 'Melee Damage', valueId: 'melee-damage-value', baseValue: 0, maxValue: 50 },
+        { stat: 'Critical Damage', valueId: 'critical-damage-value', baseValue: 0, maxValue: 50 }
+    ];
+    
+    statMappings.forEach(mapping => {
+        const currentValue = currentHeroStats[mapping.stat] || mapping.baseValue;
+        const diff = currentValue - mapping.baseValue;
+        
+        // Update the value element
+        const valueElement = document.getElementById(mapping.valueId);
+        if (valueElement) {
+            valueElement.textContent = diff !== 0 ? `${diff > 0 ? '+' : ''}${diff}%` : '0%';
+        }
+        
+        // Update the bar width
+        const barId = mapping.valueId.replace('-value', '-bar');
+        const barElement = document.getElementById(barId);
+        if (barElement) {
+            // Calculate percentage (0-100%)
+            const percentage = ((currentValue - mapping.baseValue) / (mapping.maxValue - mapping.baseValue)) * 100;
+            const clampedPercentage = Math.min(100, Math.max(0, percentage)); // Clamp between 0-100
+            barElement.style.width = `${clampedPercentage}%`;
+        }
+    });
+    
+    // Update health bar segments
+    updateHealthBarSegments(healthValue);
+}
+// Function to update the health bar segments
+// Improved health bar segments function
+function updateHealthBarSegments(healthValue) {
+    const lifeBarContainer = document.getElementById('life-bar-container');
+    if (!lifeBarContainer) return;
+    
+    // Clear existing segments
+    lifeBarContainer.innerHTML = '';
+    
+    // Create 10 segments
+    const segmentsTotal = 10;
+    const maxHealth = 500; // Base value for 100% width
+    const healthPerSegment = maxHealth / segmentsTotal;
+    
+    for (let i = 0; i < segmentsTotal; i++) {
+        const segment = document.createElement('div');
+        segment.className = 'life-segment';
+        
+        // Fill segments based on current health
+        if (i * healthPerSegment < healthValue) {
+            segment.classList.add('life-filled');
+        } else {
+            segment.classList.add('life-empty');
+        }
+        
+        lifeBarContainer.appendChild(segment);
+    }
+}
+    // Function to initialize ability carousel
+    function initAbilityCarousel() {
+        if (!selectedHero) return;
+        
+        const hero = heroes[selectedHero];
+        const carousel = document.getElementById('ability-carousel');
+        const indicator = document.getElementById('ability-indicator');
+        
+        if (!carousel || !indicator) return;
+        
+        // Clear existing content
+        carousel.innerHTML = '';
+        indicator.innerHTML = '';
+        
+        // Add slides for each ability
+        hero.abilities.forEach((ability, index) => {
+            // Create slide
+            const slide = document.createElement('div');
+            slide.className = `ability-slide ${index === 0 ? 'active' : ''}`;
+            slide.setAttribute('data-index', index);
+            
+            // Get ability icon
+            const abilityIconPath = getAbilityIconPath(hero.name, ability.name);
+            
+            // Generate enhanced stats HTML using our improved function
+            try {
+                const statsHTML = generateModifiedAbilityHTML(ability, currentHeroStats, heroBaseStats[selectedHero]);
+                
+                // Create slide content
+                slide.innerHTML = `
+                    <div class="ability-header">
+                        <div class="ability-icon">
+                            <img src="${abilityIconPath}" alt="${ability.name}" 
+                                onerror="this.parentNode.innerHTML='${ability.name.charAt(0)}'"/>
+                        </div>
+                        <div class="ability-name">${ability.name}</div>
+                    </div>
+                    <div class="ability-description">${ability.description}</div>
+                    <div class="ability-stats">
+                        ${statsHTML}
+                    </div>
+                `;
+            } catch (error) {
+                console.error(`Error generating ability stats for ${ability.name}:`, error);
+                
+                // Fallback to simple display without stats calculation
+                slide.innerHTML = `
+                    <div class="ability-header">
+                        <div class="ability-icon">
+                            <img src="${abilityIconPath}" alt="${ability.name}" 
+                                onerror="this.parentNode.innerHTML='${ability.name.charAt(0)}'"/>
+                        </div>
+                        <div class="ability-name">${ability.name}</div>
+                    </div>
+                    <div class="ability-description">${ability.description}</div>
+                    <div class="ability-stats">
+                        ${ability.stats.map(stat => `
+                            <div class="ability-stat">
+                                <label>${stat.label}:</label>
+                                <span>${stat.value}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            carousel.appendChild(slide);
+            
+            // Create indicator dot
+            const dot = document.createElement('div');
+            dot.className = `indicator-dot ${index === 0 ? 'active' : ''}`;
+            dot.setAttribute('data-index', index);
+            indicator.appendChild(dot);
+        });
+        
+        // Set up navigation
+        document.getElementById('prev-ability')?.addEventListener('click', () => {
+            navigateAbility('prev');
+        });
+        
+        document.getElementById('next-ability')?.addEventListener('click', () => {
+            navigateAbility('next');
+        });
+        
+        // Add click handler for indicator dots
+        document.querySelectorAll('.indicator-dot').forEach(dot => {
+            dot.addEventListener('click', () => {
+                const index = parseInt(dot.getAttribute('data-index'));
+                showAbilitySlide(index);
+            });
+        });
+        
+        // Setup expandable stats after they're added to DOM
+        setTimeout(() => {
+            setupExpandableStats();
+        }, 100);
+    }
+    
+
+    function navigateAbility(direction) {
+        const slides = document.querySelectorAll('.ability-slide');
+        if (!slides.length) return;
+        
+        const currentSlide = document.querySelector('.ability-slide.active');
+        if (!currentSlide) return;
+        
+        // Get current index
+        let currentIndex = parseInt(currentSlide.getAttribute('data-index'));
+        
+        // Calculate next index
+        let nextIndex;
+        if (direction === 'next') {
+            nextIndex = (currentIndex + 1) % slides.length;
+        } else {
+            nextIndex = (currentIndex - 1 + slides.length) % slides.length;
+        }
+        
+        // Show the next slide
+        showAbilitySlide(nextIndex);
+    }
+    
+    function showAbilitySlide(index) {
+        const slides = document.querySelectorAll('.ability-slide');
+        const dots = document.querySelectorAll('.indicator-dot');
+        
+        // Make sure index is valid
+        if (index < 0 || index >= slides.length) {
+            console.error(`Invalid slide index: ${index}`);
+            return;
+        }
+        
+        // Update slides
+        slides.forEach(slide => {
+            slide.classList.remove('active');
+        });
+        slides[index].classList.add('active');
+        
+        // Update indicators
+        dots.forEach(dot => {
+            dot.classList.remove('active');
+        });
+        dots[index].classList.add('active');
+    }
+
+// Function to show a specific ability slide
+function showAbilitySlide(index) {
+    const slides = document.querySelectorAll('.ability-slide');
+    const dots = document.querySelectorAll('.indicator-dot');
+    
+    // Validate index
+    if (index < 0 || index >= slides.length) {
+        console.error(`Invalid slide index: ${index}`);
+        return;
+    }
+    
+    // Update slides
+    slides.forEach((slide, i) => {
+        if (i === index) {
+            slide.classList.add('active');
+        } else {
+            slide.classList.remove('active');
+        }
+    });
+    
+    // Update indicators
+    dots.forEach((dot, i) => {
+        if (i === index) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
+    
+    // Log the ACTUAL index we're showing, not some string
+    console.log(`Showing slide ${index}`);
+}
     // Remove item
     function removeItem(itemId) {
         selectedItems = selectedItems.filter(item => item.id !== itemId);
@@ -2061,6 +3579,15 @@ function showToast(message, type = 'success') {
     
     // Generate hero cards
     function generateHeroCards() {
+        const heroSelector = document.getElementById('hero-selector');
+        if (!heroSelector) {
+            console.error('Hero selector element not found!');
+            return; // Exit the function if element doesn't exist
+        }
+        
+        // Clear existing heroes first
+        heroSelector.innerHTML = '';
+        
         for (const heroId in heroes) {
             const hero = heroes[heroId];
             
@@ -2084,7 +3611,7 @@ function showToast(message, type = 'success') {
             heroCard.innerHTML = `
                 <img src="${heroImagePath}" alt="${hero.name}" onerror="this.src='https://placehold.co/100x100/${roleColor.replace('#', '')}/FFFFFF?text=${hero.name.charAt(0)}'" />
                 <h3>${hero.name}</h3>
-                <div class="role">${hero.role}</div>
+                <div class="role ${hero.role}">${hero.role}</div>
             `;
             
             heroCard.addEventListener('click', () => {
@@ -2095,6 +3622,86 @@ function showToast(message, type = 'success') {
             
             heroSelector.appendChild(heroCard);
         }
+        setupRoleFilters();
+    }
+    function updateAbilityStats() {
+        const abilities = document.querySelectorAll('.ability');
+        
+        abilities.forEach(ability => {
+            const abilityName = ability.querySelector('.ability-name').textContent;
+            const statsContainer = ability.querySelector('.ability-stats');
+            
+            // Clear existing stats
+            statsContainer.innerHTML = '';
+            
+            // Find ability in hero data
+            const heroAbility = heroes[selectedHero].abilities.find(a => a.name === abilityName);
+            if (!heroAbility) return;
+            
+            // Get current stat modifiers
+            const weaponPowerMod = (currentHeroStats['Weapon Power'] - 100) / 100 || 0;
+            const abilityPowerMod = (currentHeroStats['Ability Power'] - 100) / 100 || 0;
+            const cooldownMod = (currentHeroStats['Cooldown Reduction']) / 100 || 0;
+            
+            // Process each stat
+            heroAbility.stats.forEach(stat => {
+                let statValue = stat.value;
+                let modifiedValue = null;
+                let modifier = null;
+                
+                // Extract numeric values if possible
+                const numMatch = statValue.match(/(\d+(\.\d+)?)/);
+                if (numMatch) {
+                    const baseValue = parseFloat(numMatch[1]);
+                    
+                    // Apply appropriate modifiers based on stat type
+                    if (stat.label.includes('Damage')) {
+                        modifiedValue = baseValue * (1 + weaponPowerMod);
+                        modifier = baseValue * weaponPowerMod;
+                    } else if (stat.label.includes('Healing')) {
+                        modifiedValue = baseValue * (1 + abilityPowerMod);
+                        modifier = baseValue * abilityPowerMod;
+                    } else if (stat.label.includes('Cooldown')) {
+                        modifiedValue = baseValue * (1 - cooldownMod);
+                        modifier = -baseValue * cooldownMod;
+                    }
+                    
+                    // Create stat element
+                    const statEl = document.createElement('div');
+                    statEl.className = 'ability-stat';
+                    
+                    if (modifiedValue !== null) {
+                        // Format values to 1 decimal place
+                        const formattedBase = baseValue.toFixed(1);
+                        const formattedMod = modifier.toFixed(1);
+                        const formattedValue = modifiedValue.toFixed(1);
+                        
+                        // Determine modifier style
+                        const modClass = modifier >= 0 ? 'stat-bonus-positive' : 'stat-bonus-negative';
+                        const modSign = modifier >= 0 ? '+' : '';
+                        
+                        // Show detailed stat with modifier
+                        statEl.innerHTML = `
+                            <div class="stat-label">${stat.label}:</div>
+                            <div class="stat-value-container">
+                                <span class="base-value">${formattedBase}</span>
+                                <span class="modifier ${modClass}">${modSign}${formattedMod}</span>
+                                <span class="equals">=</span>
+                                <span class="final-value">${formattedValue}</span>
+                            </div>
+                        `;
+                    } else {
+                        // Show standard stat
+                        statEl.innerHTML = `
+                            <div class="stat-label">${stat.label}:</div>
+                            <div class="stat-value">${statValue}</div>
+                        `;
+                    }
+                    
+                    statsContainer.appendChild(statEl);
+                }
+            });
+        });
     }
     function setupShareFeatures() {
         // Create the share popup
@@ -2428,7 +4035,25 @@ function postToDiscord(shareURL) {
     });
     
     // Initialize
-    generateHeroCards();
+    setTimeout(() => {
+        try {
+            // Initialize
+            generateHeroCards();
+            
+            // Set up role filters if they exist
+            if (document.querySelector('.role-filters')) {
+                setupRoleFilters();
+            }
+            
+            // Select first hero by default if hero selector exists
+            const heroSelector = document.getElementById('hero-selector');
+            if (heroSelector && heroSelector.children.length > 0) {
+                heroSelector.children[0].click();
+            }
+        } catch (error) {
+            console.error('Error during initialization:', error);
+        }
+    }, 100);
     
     // Select first hero by default
     if (heroSelector.children.length > 0) {
