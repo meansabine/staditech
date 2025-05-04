@@ -3990,7 +3990,7 @@ function postBuildToDiscord(build) {
         return;
     }
   // Discord webhook URL
-  const webhookUrl = "https://discord.com/api/webhooks/1366651926959095892/fANkUR_cUgnMoTLlfhgxSBx0kY8x3Pvr97CuS6uhKg5CF--8R37BrTFeYpMNNtnwJTO1";
+  const webhookUrl = "";
   
   // Generate build URL
   const buildData = {
@@ -4057,7 +4057,7 @@ function postToDiscord(shareURL) {
         console.log('User has not consented to Discord sharing');
         return;
     }
-    const webhookUrl = "https://discord.com/api/webhooks/1366651926959095892/fANkUR_cUgnMoTLlfhgxSBx0kY8x3Pvr97CuS6uhKg5CF--8R37BrTFeYpMNNtnwJTO1";
+    const webhookUrl = "";
     
     // Get hero info
     const hero = heroes[selectedHero];
